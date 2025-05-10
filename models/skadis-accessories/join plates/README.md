@@ -4,26 +4,13 @@ These join plates are designed to connect IKEA SKÅDIS pegboards together to cre
 
 ## Available Join Plates
 
-The collection includes two different types of join plates:
+The collection includes three different types of join plates:
 
-### Corner Join Plate
-
-![Corner Join Plate](../../../images/skadis_corner_join_plate.png)
-
-The corner join plate is designed to connect four SKÅDIS pegboards on a single plane at their corners. This is ideal for:
-
-- Creating a grid layout of multiple pegboards
-- Joining four pegboards at their corners
-- Building larger, modular wall organization systems
-- Providing additional stability at the intersection points
-
-**Dimensions:** 110 x 60 x 5 mm
-
-### Side Join Plate
+### Square Join Plate
 
 ![Side Join Plate](../../../images/skadis_side_join_plate.jpg)
 
-The side join plate is designed to connect two SKÅDIS pegboards side-by-side in either horizontal or vertical orientation. This is perfect for:
+The square join plate (previously called "side join plate") is designed to connect two SKÅDIS pegboards side-by-side in either horizontal or vertical orientation. This is perfect for:
 
 - Extending your pegboard horizontally to cover larger wall areas
 - Stacking pegboards vertically to utilize wall height
@@ -31,6 +18,23 @@ The side join plate is designed to connect two SKÅDIS pegboards side-by-side in
 - Joining multiple pegboards for a seamless look
 
 **Dimensions:** 70 x 60 x 5 mm
+
+### Corner Join Plates - Portrait (P) and Landscape (L) Variations
+
+![Corner Join Plate](../../../images/skadis_corner_join_plate.png)
+
+The corner join plates now come in two orientation variations - Portrait (P) and Landscape (L) - to provide more flexibility in how you connect your SKÅDIS pegboards. These plates are designed to connect four SKÅDIS pegboards on a single plane at their corners and are ideal for:
+
+- Creating a grid layout of multiple pegboards
+- Joining four pegboards at their corners
+- Building larger, modular wall organization systems
+- Providing additional stability at the intersection points
+- Accommodating different mounting configurations based on your space constraints
+
+**Dimensions:**
+
+- Portrait (P): 110 x 60 x 5 mm
+- Landscape (L): 70 x 100 x 5 mm
 
 ## The SKÅDIS Keys
 
@@ -97,10 +101,12 @@ For best results when 3D printing these join plates:
 PCTG is strongly recommended for these parts due to its excellent balance of durability, impact resistance, and ease of printing.
 
 **Europe:**
+
 - [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/) - High-quality filaments with consistent diameter and excellent layer adhesion
 - [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/) - High-quality PCTG with excellent transparency and color options
 
 **United States:**
+
 - [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
 - [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
 - [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
@@ -113,8 +119,12 @@ These join plates are compatible with all standard IKEA SKÅDIS pegboards and us
 
 ## Files
 
-- **corner join plate.step** - STEP file for the four-way corner connector
-- **side join plate.step** - STEP file for the horizontal/vertical side connector
+- **join plates.step** - Combined STEP file containing all three join plate variations:
+  - Square (previously "side join plate")
+  - Corner - Portrait (P)
+  - Corner - Landscape (L)
+- **corner join plate.step** - Legacy STEP file for the original four-way corner connector
+- **side join plate.step** - Legacy STEP file for the original horizontal/vertical side connector
 - **../skadis key.step** - STEP file for the standard key used to lock join plates to the pegboards
 - **../skadis double key.step** - STEP file for the double key used to connect join plates on both sides of a pegboard
 
