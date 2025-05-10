@@ -7,6 +7,7 @@ Welcome to the Ikea Skadis Adapters project! This repository is dedicated to pro
 ## Overview
 
 This project creates a unified ecosystem between these two popular standards, allowing you to:
+
 - Connect Ikea Skadis pegboards to 2020 aluminium extrusion frameworks
 - Expand your Skadis pegboards using specialized joinery components
 - Build hybrid systems that leverage the strengths of both standards
@@ -45,6 +46,7 @@ This project is licensed under the [Creative Commons Attribution-NonCommercial 4
 - Adapt — remix, transform, and build upon the material
 
 Under the following terms:
+
 - Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
 - NonCommercial — You may not use the material for commercial purposes.
 
