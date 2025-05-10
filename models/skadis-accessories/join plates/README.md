@@ -83,11 +83,29 @@ This creates a stronger connection ideal for heavy loads or specialized configur
 
 For best results when 3D printing these join plates:
 
-- Use PETG, PLA+, or ABS for durability
-- Print with at least 25% infill for structural integrity
+- Use PCTG (preferred), PETG, PLA+, or ABS for durability
+- Print with 15% infill (standard default is sufficient)
+- 4 perimeters for optimal strength
+- 8 top and bottom layers for solid surfaces
 - No supports needed for either design
 - Layer height of 0.2mm is recommended
+- **Seam Position**: Set to "Random" in your slicer for optimal strength (prevents creating a single weak point)
 - Print flat on the bed
+
+### Recommended Filament Suppliers
+
+PCTG is strongly recommended for these parts due to its excellent balance of durability, impact resistance, and ease of printing.
+
+**Europe:**
+- [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/) - High-quality filaments with consistent diameter and excellent layer adhesion
+- [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/) - High-quality PCTG with excellent transparency and color options
+
+**United States:**
+- [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
+- [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
+- [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+
+If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
 
 ## Compatibility
 
