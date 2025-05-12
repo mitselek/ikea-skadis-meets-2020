@@ -133,4 +133,4 @@ These join plates are compatible with all standard IKEA SKÅDIS pegboards and us
 - **../skadis key - normal.step** - STEP file for the standard key used to lock join plates to the pegboards
 - **../skadis key - double.step** - STEP file for the double key used to connect join plates on both sides of a pegboard
 
-For more information about other SKÅDIS accessories, see the main [repository documentation](../../../README.md).
+For more information about other SKÅDIS and/or 2020 accessories, see the main [repository documentation](https://github.com/mitselek/ikea-skadis-meets-2020).

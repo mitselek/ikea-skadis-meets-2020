@@ -221,4 +221,4 @@ These adapters excel in various settings:
 
 ## Additional Information
 
-For more details on accessories and other models, please refer to the corresponding README files in the `skadis-accessories` and `2020-accessories` directories.
+For more information about other SKÅDIS and/or 2020 accessories, see the main [repository documentation](https://github.com/mitselek/ikea-skadis-meets-2020).
