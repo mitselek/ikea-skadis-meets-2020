@@ -2,26 +2,33 @@
 
 These join plates are designed to connect IKEA SKÅDIS pegboards together to create larger wall storage configurations.
 
+![SKÅDIS Join Plates](../../../images/skadis join plates/skadis join plates.jpg)
+*All join plate variants and keys laid out on a single build plate for efficient printing*
+
 ## Available Join Plates
 
 The collection includes three different types of join plates:
 
 ### Square Join Plate
 
-![Side Join Plate](../../../images/skadis_side_join_plate.jpg)
+![Side Join Plate](../../../images/skadis join plates/skadis join plate - side.jpg)
 
-The square join plate (previously called "side join plate") is designed to connect two SKÅDIS pegboards side-by-side in either horizontal or vertical orientation. This is perfect for:
+The square join plate is designed to connect two SKÅDIS pegboards side-by-side in either horizontal or vertical orientation. This is perfect for:
 
 - Extending your pegboard horizontally to cover larger wall areas
 - Stacking pegboards vertically to utilize wall height
 - Creating custom-sized storage configurations
 - Joining multiple pegboards for a seamless look
 
+![Square Join Plate Mounted](../../../images/skadis join plates/skadis join plate - side - mounted.jpg)
+*Square join plate installed between two SKÅDIS pegboards*
+
 **Dimensions:** 70 x 60 x 5 mm
 
 ### Corner Join Plates - Portrait (P) and Landscape (L) Variations
 
-![Corner Join Plate](../../../images/skadis_corner_join_plate.png)
+![Corner Join Plate - P](../../../images/skadis join plates/skadis join plate - P.jpg)
+![Corner Join Plate - L](../../../images/skadis join plates/skadis join plate - L.jpg)
 
 The corner join plates now come in two orientation variations - Portrait (P) and Landscape (L) - to provide more flexibility in how you connect your SKÅDIS pegboards. These plates are designed to connect four SKÅDIS pegboards on a single plane at their corners and are ideal for:
 
@@ -38,11 +45,11 @@ The corner join plates now come in two orientation variations - Portrait (P) and
 
 ## The SKÅDIS Keys
 
-![SKÅDIS Key](../../../images/skadis_key.jpg)
+![SKÅDIS Key](../../../images/skadis keys.jpg)
 
 ### Standard Key
 
-The standard SKÅDIS key (located in the parent directory as `skadis key.step`) is an essential component for using these join plates. The key works by:
+The standard SKÅDIS key (located in the parent directory as `skadis key - normal.step`) is an essential component for using these join plates. The key works by:
 
 - Locking the join plates securely to the pegboard holes
 - Creating a stable connection between multiple pegboards
@@ -53,9 +60,9 @@ Each join plate requires SKÅDIS keys for proper installation. The key inserts i
 
 ### Double Key
 
-![SKÅDIS Double Key](../../../images/skadis_key.jpg)
+![SKÅDIS Double Key](../../../images/skadis keys.jpg)
 
-The double SKÅDIS key (located in the parent directory as `skadis double key.step`) is designed for a special application where you need to:
+The double SKÅDIS key (located in the parent directory as `skadis key - double.step`) is designed for a special application where you need to:
 
 - Connect join plates on both sides of a pegboard
 - Create a "sandwich" configuration with the board between two plates
@@ -91,8 +98,9 @@ For best results when 3D printing these join plates:
 - Print with 15% infill (standard default is sufficient)
 - 4 perimeters for optimal strength
 - 8 top and bottom layers for solid surfaces
-- No supports needed for either design
+- No supports needed
 - Layer height of 0.2mm is recommended
+- **Arachne Wall Generator**: Enable if your slicer supports it (PrusaSlicer/SuperSlicer/OrcaSlicer) for stronger, more consistent extrusion around the curved contours
 - **Seam Position**: Set to "Random" in your slicer for optimal strength (prevents creating a single weak point)
 - Print flat on the bed
 
@@ -119,13 +127,10 @@ These join plates are compatible with all standard IKEA SKÅDIS pegboards and us
 
 ## Files
 
-- **join plates.step** - Combined STEP file containing all three join plate variations:
-  - Square (previously "side join plate")
-  - Corner - Portrait (P)
-  - Corner - Landscape (L)
-- **corner join plate.step** - Legacy STEP file for the original four-way corner connector
-- **side join plate.step** - Legacy STEP file for the original horizontal/vertical side connector
-- **../skadis key.step** - STEP file for the standard key used to lock join plates to the pegboards
-- **../skadis double key.step** - STEP file for the double key used to connect join plates on both sides of a pegboard
+- **join plate - square.step** - STEP file for the square join plate (for side-by-side connections)
+- **join plate - portrait.step** - STEP file for the Portrait (P) corner join plate
+- **join plate - landscape.step** - STEP file for the Landscape (L) corner join plate
+- **../skadis key - normal.step** - STEP file for the standard key used to lock join plates to the pegboards
+- **../skadis key - double.step** - STEP file for the double key used to connect join plates on both sides of a pegboard
 
 For more information about other SKÅDIS accessories, see the main [repository documentation](../../../README.md).
