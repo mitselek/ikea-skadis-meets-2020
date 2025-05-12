@@ -138,11 +138,13 @@ Half hooks can be used in several effective ways:
 For optimal results when 3D printing these adapters:
 
 - Use PCTG, PETG, or ABS for durability (PLA is not recommended for long-term structural use)
-- Print with at least 25% infill
-- 4 perimeters recommended for optimal strength
+- Print with 5 perimeters for optimal strength and flexibility
+- No infill needed
 - No supports needed
-- Print in the orientation shown in the model files
-- For normal hooks, ensure good layer adhesion to withstand the installation bending forces
+- **Arachne Wall Generator**: Enable if your slicer supports it (PrusaSlicer/SuperSlicer/OrcaSlicer) for stronger, more consistent extrusion around the curved contours
+- **Seam Position**: Set to "Random" in your slicer for optimal strength (prevents creating a single weak point)
+- Unselect/disable "Ensure vertical shell thickness" option to greatly shorten print time
+- Print in the orientation shown in the model files (flat on bed)
 
 ### Troubleshooting Common Installation Issues
 
