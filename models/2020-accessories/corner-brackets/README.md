@@ -116,3 +116,7 @@ The load capacity of these brackets depends on:
 4. Type of load (shear vs. tension)
 
 For critical applications where safety is a concern, appropriate testing should be performed before deployment.
+
+## Additional Information
+
+For more information about other SKÅDIS and/or 2020 accessories, see the main [repository documentation](https://github.com/michelek/ikea-skadis-adapters).
