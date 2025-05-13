@@ -15,12 +15,12 @@ These corner brackets are designed to join 2020 aluminium extrusion profiles at 
 
 The corner brackets are available in multiple configurations based on the following parameters:
 
-### Screw Parameters:
+### Screw Parameters
 
 - **Screw Size**: M4 or M5
 - **Screw Head Type**: Flat head or Countersunk (sunk) head
 
-### Wing Configuration (per wing):
+### Wing Configuration (per wing)
 
 - **Number of Holes**: 1 or 2 holes per wing
 
@@ -58,10 +58,15 @@ Examples:
 
 For optimal results when 3D printing these brackets:
 
-- Use PETG or ABS for better strength and durability
+- Use PETG, PCTG, or ABS for better strength and durability
+  - **PCTG is highly recommended** as it offers superior layer adhesion, impact resistance, and dimensional stability compared to standard PETG
+  - PCTG combines the ease of printing of PETG with mechanical properties closer to ABS
+  - PCTG typically has better layer bonding, which is critical for the strength of these brackets
 - Print with 5 perimeters and no infill for optimal strength
 - Enable Arachne walls for better structural integrity
-- Use random seam position to improve strength
+- Use random seam position to eliminate potential break points
+  - Aligned seams create a structural weakness that can become a fracture line
+  - Random seams distribute the weakness throughout the part, significantly increasing overall strength
 - **CRITICAL**: Print with the bracket on its side as provided in the print file
 - No supports needed when printed in the recommended orientation
 
@@ -78,7 +83,7 @@ For optimal results when 3D printing these brackets:
 
 When using countersunk (sunk) variants, it's recommended to perform a breaking test with a spare bracket to determine the optimal tightening force. The breaking point will differ significantly based on:
 
-- Printing material (PLA, PETG, ABS, etc.)
+- Printing material (PLA, PETG, ABS, PCTG, etc.)
 - Print settings (perimeters, layer height, etc.)
 - Print orientation
 - Layer adhesion quality
