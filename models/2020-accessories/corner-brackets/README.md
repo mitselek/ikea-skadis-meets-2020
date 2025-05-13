@@ -7,6 +7,7 @@ These corner brackets are designed to join 2020 aluminium extrusion profiles at 
 ## Features
 
 - **High Strength**: Designed to provide sturdy support for 2020 extrusion frames
+- **Organic Design**: Features organic geometry that distributes stress more evenly than straight edges
 - **Multiple Configurations**: Available with various screw types and hole counts
 - **Easy Installation**: Simple mounting with common M4 or M5 screws
 - **Customizable**: Choose the exact configuration that meets your project requirements
