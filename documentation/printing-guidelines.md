@@ -40,6 +40,22 @@ This document provides guidelines for 3D printing the adapters and joins designe
 
 PCTG prints at similar temperatures to PETG (230-250°C) but typically requires less drying before use and exhibits less stringing during printing.
 
+### Recommended Filament Suppliers for PCTG
+
+**Europe:**
+
+- [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/)
+- [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/)
+
+**United States:**
+
+- [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
+- [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
+- [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+- [3D Fuel Pro PCTG](https://www.3dfuel.com/collections/1-75mm-pro-pctg/)
+
+If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
+
 ## Tips for Successful Printing
 
 1. **Bed Adhesion**: Ensure proper bed adhesion to prevent warping. Use a suitable adhesive or print on a textured surface.

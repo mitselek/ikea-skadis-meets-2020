@@ -118,6 +118,7 @@ PCTG is strongly recommended for these parts due to its excellent balance of dur
 - [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
 - [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
 - [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+- [3D Fuel Pro PCTG](https://www.3dfuel.com/collections/1-75mm-pro-pctg/)
 
 If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
 

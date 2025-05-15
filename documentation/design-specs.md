@@ -22,6 +22,22 @@ This document outlines the design specifications for the adaptors and joins crea
 ---
 > *PLA is only suitable for applications with minimal load requirements. For load-bearing applications, PETG, PCTG or stronger materials are recommended.
 
+### Recommended Filament Suppliers for PCTG
+
+**Europe:**
+
+- [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/)
+- [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/)
+
+**United States:**
+
+- [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
+- [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
+- [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+- [3D Fuel Pro PCTG](https://www.3dfuel.com/collections/1-75mm-pro-pctg/)
+
+If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
+
 ## Tolerances
 
 - **Adaptor Fit Tolerance:** ±0.2mm

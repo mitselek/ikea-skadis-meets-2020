@@ -146,6 +146,24 @@ For optimal results when 3D printing these adapters:
 - Unselect/disable "Ensure vertical shell thickness" option to greatly shorten print time
 - Print in the orientation shown in the model files (flat on bed)
 
+### Recommended Filament Suppliers for PCTG
+
+PCTG is recommended for best durability and print quality. Here are trusted suppliers:
+
+**Europe:**
+
+- [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/)
+- [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/)
+
+**United States:**
+
+- [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
+- [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
+- [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+- [3D Fuel Pro PCTG](https://www.3dfuel.com/collections/1-75mm-pro-pctg/)
+
+If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
+
 ### Troubleshooting Common Installation Issues
 
 - **Hook Won't Clip**: Check that you're using the correct hook type (horizontal vs vertical) for your setup

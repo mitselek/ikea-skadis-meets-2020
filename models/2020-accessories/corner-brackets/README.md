@@ -73,6 +73,22 @@ For optimal results when 3D printing these brackets:
 
 > ⚠️ **IMPORTANT**: The side orientation is strongly recommended for optimal strength. When printed on the side, the layers are correctly aligned to bear loads in both wings, providing maximum strength across the entire bracket. The flat variants don't suffer from layer separation weakness like the countersunk variants, but still benefit from the side orientation for optimal layer alignment relative to the forces they'll bear.
 
+### Recommended Filament Suppliers for PCTG
+
+**Europe:**
+
+- [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/)
+- [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/)
+
+**United States:**
+
+- [Fusion Filaments PCTG](https://www.fusionfilaments.com/shop/category/pctg-24)
+- [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg)
+- [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg)
+- [3D Fuel Pro PCTG](https://www.3dfuel.com/collections/1-75mm-pro-pctg/)
+
+If PCTG is unavailable, PETG is a good alternative, though it may be slightly less impact resistant.
+
 ## Installation Instructions
 
 1. Position the corner bracket at the desired junction between two 2020 extrusion profiles
