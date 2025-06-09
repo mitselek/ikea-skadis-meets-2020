@@ -20,6 +20,7 @@ Each model is designed with precision to ensure seamless integration between the
 - **models/**: Contains the 3D models and their respective documentation.
   - **skadis-to-2020/**: Adaptors designed to connect Ikea Skadis pegboards to 2020 aluminium extrusion rods.
   - **skadis-accessories/**: Joinery and accessories specifically for Ikea Skadis pegboards, including corner and side join plates.
+    - **hooks/**: Four specialized hook variants (U, U-o, H, H-o) with two-slot mounting system and optional 5mm center holes.
   - **2020-accessories/**: Accessories intended for use with 2020 aluminium extrusion rods.
     - **roller-bearings/**: Roller bearings designed for 2020 extrusion, using 7mm x 10mm nylon spacers as rollers.
   
