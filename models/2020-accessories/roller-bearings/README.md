@@ -26,30 +26,24 @@ This modular construction allows for easy assembly, secure retention of rollers,
 
 ## Assembly Instructions
 
-1. Print the parts using PETG, PCTG, or other durable filament.
-2. Join the hub and outer shell from one end with a clip
-3. Insert the 7mm x 10mm nylon spacers on the pins of joining clip.
-4. Join the hub and outer shell from other end wit a second clip and make sure the pins align with rollers (apply force :p ).
-5. Slide the assembled bearing onto the 2020 extrusion profile.
+1. Print the parts using PETG, PCTG, or other durable filament.  
+   ![Step 1](../../../images/2020_roller_bearing/assembly%201.jpg)
+2. Clip the clip to the hub from one end  
+   ![Step 4](../../../images/2020_roller_bearing/assembly%202-3-4.jpg)
+3. Add the shell to the party  
+4. Insert the 7mm x 10mm nylon spacers on the pins of joining clip.  
+5. Join the hub and outer shell from other end with a second clip and make sure the pins align with rollers (apply force :p ).  
+   ![Step 5-1](../../../images/2020_roller_bearing/assembly%205-1.jpg)
+   <p align="center">
+     <img src="../../../images/2020_roller_bearing/assembly%205-2.jpg" width="24%"/>
+     <img src="../../../images/2020_roller_bearing/assembly%205-3.jpg" width="24%"/>
+     <img src="../../../images/2020_roller_bearing/assembly%205-4.jpg" width="24%"/>
+     <img src="../../../images/2020_roller_bearing/assembly%205-5.jpg" width="24%"/>
+   </p>
+6. Slide the assembled bearing onto the 2020 extrusion profile.  
+   ![Step 6](../../../images/2020_roller_bearing/assembly%206.jpg)
 
-## Tips
-
-- For best results, use high-quality nylon spacers and ensure your printer is well-calibrated for dimensional accuracy.
-- Lubrication is generally not required due to the low-friction nature of nylon, but can be added for even smoother operation.
-
-## Variants
-
-- **Standard Bearing:** 48mm outer diameter, fits snugly around 2020 extrusion for general linear or rotational movement.
-- **Rimmed Variant:** 52mm outer diameter with an additional rim, designed to allow four bearings to support and guide items such as filament rolls or spools. The rim keeps the supported object centered and stable on the rollers.
-
-## Files
-
-- `roller-bearing.step` – Main STEP file for the standard 48mm bearing
-- `roller-bearing-rimmed.step` – STEP file for the 52mm rimmed variant
-
-## Post-Processing
-
-If your printer is well-calibrated and you use random seam placement, seams on the printed bearings will be nearly invisible both visually and by touch. However, if seam artifacts are present or your print settings are less optimized, light sanding of the bearing surface is strongly recommended to ensure smooth rolling and prevent wear on the supported object. Sanding with 180 grit sandpaper has been found effective for this purpose.
+For a video demonstration, see: [assembly video](../../../images/2020_roller_bearing/IMG_5568.mp4)
 
 ---
 
