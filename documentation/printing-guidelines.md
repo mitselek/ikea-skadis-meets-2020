@@ -26,16 +26,17 @@ This document provides guidelines for 3D printing the adapters and joins designe
 ### Recommended Filament Suppliers
 
 **For PCTG (Recommended):**
-- **Europe**: 
+
+- **Europe**:
   - [Extrudr PCTG](https://www.extrudr.com/en/inlt/products/pctg/) - Excellent filaments with consistent diameter and superior layer adhesion
   - [Fiberlogy PCTG](https://fiberlogy.com/en/fiberlogy-filaments/pctg/) - High-quality PCTG with excellent transparency and color options
 
-- **United States**: 
+- **United States**:
   - [Fusion Filaments PCTG](https://fusionfilaments.com/collections/pctg-filament) - Known for tight tolerance specifications
   - [Printed Solid by Jessie PCTG](https://www.printedsolid.com/collections/1-75mm-filament/material_pctg) - Offers good layer adhesion and minimal warping
   - [MatterHackers Pro PCTG](https://www.matterhackers.com/s/store?q=pctg) - Excellent strength characteristics
 
-- **Global**: 
+- **Global**:
   - [Polymaker PolyMax PCTG](https://polymaker.com/product/polymax-pctg/) - Available through various resellers worldwide
 
 PCTG prints at similar temperatures to PETG (230-250°C) but typically requires less drying before use and exhibits less stringing during printing.
