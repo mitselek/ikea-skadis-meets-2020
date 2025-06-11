@@ -132,14 +132,11 @@ This directory contains four specialized hook variants designed for the IKEA SKÃ
 
 #### European Suppliers
 
-- **Extrudr**: Professional-grade PCTG filaments
-- **Fiberlogy**: High-quality PCTG with excellent clarity
+- **Extrudr**: [Professional-grade PCTG filaments](https://www.extrudr.com/en/inlt/products/pctg/)
+- **Fiberlogy**: [High-quality PCTG with excellent clarity](https://fiberlogy.com/en/fiberlogy-filaments/pctg-filament/)
 
 #### US Suppliers
 
-- **Fusion Filaments**: Premium PCTG materials
-- **Printed Solid**: Professional printing materials
-- **MatterHackers**: Wide selection of engineering plastics
 - **3D Fuel**: [Pro PCTG](https://www.3dfuel.com/collections/petg-3d-printer-filament/products/pro-pctg-3d-printer-filament) - Professional-grade filament
 
 ## Application Samples
