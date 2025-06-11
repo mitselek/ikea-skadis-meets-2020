@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .stats {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #ffd700;
+    }
+    
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .success {
+      background: rgba(76, 175, 80, 0.3);
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    
+    .error {
+      background: rgba(244, 67, 54, 0.3);
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>🛠️ SKÅDIS Outreach</h2>
+    <p style="margin: 5px 0; font-size: 12px;">Community engagement made simple</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <span>Prospects Found:</span>
+      <span class="stat-value" id="prospects-count">0</span>
+    </div>
+    <div class="stat-item">
+      <span>Messages Sent:</span>
+      <span class="stat-value" id="messages-sent">0</span>
+    </div>
+    <div class="stat-item">
+      <span>Response Rate:</span>
+      <span class="stat-value" id="response-rate">0%</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="extract-page">📊 Analyze This Page</button>
+    <button id="extract-comments">💬 Extract Comments</button>
+    <button id="view-prospects">👥 View Prospects</button>
+    <button id="send-template">📧 Quick Message</button>
+  </div>
+
+  <div id="status-message"></div>
+
+  <div class="footer">
+    <div>SKÅDIS Hook Variants by Mihkel</div>
+    <div>🔗 <a href="https://makerworld.com/en/models/1503225-simple-skadis-hook" style="color: #ffd700;">Your Project</a></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
