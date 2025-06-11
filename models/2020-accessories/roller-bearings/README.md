@@ -34,12 +34,10 @@ This modular construction allows for easy assembly, secure retention of rollers,
 4. Insert the 7mm x 10mm nylon spacers on the pins of joining clip.  
 5. Join the hub and outer shell from other end with a second clip and make sure the pins align with rollers (apply force :p ).  
    ![Step 5-1](../../../images/2020_roller_bearing/assembly%205-1.jpg)
-   <p align="center">
-     <img src="../../../images/2020_roller_bearing/assembly%205-2.jpg" width="24%"/>
-     <img src="../../../images/2020_roller_bearing/assembly%205-3.jpg" width="24%"/>
-     <img src="../../../images/2020_roller_bearing/assembly%205-4.jpg" width="24%"/>
-     <img src="../../../images/2020_roller_bearing/assembly%205-5.jpg" width="24%"/>
-   </p>
+   ![Step 5-2](../../../images/2020_roller_bearing/assembly%205-2.jpg)
+   ![Step 5-3](../../../images/2020_roller_bearing/assembly%205-3.jpg)
+   ![Step 5-4](../../../images/2020_roller_bearing/assembly%205-4.jpg)
+   ![Step 5-5](../../../images/2020_roller_bearing/assembly%205-5.jpg)
 6. Slide the assembled bearing onto the 2020 extrusion profile.  
    ![Step 6](../../../images/2020_roller_bearing/assembly%206.jpg)
 

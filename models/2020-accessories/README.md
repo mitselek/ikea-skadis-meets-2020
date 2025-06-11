@@ -12,6 +12,14 @@ Brackets designed to join 2020 extrusion profiles at 90° angles. Available in m
 - Screw head types: Flat head or Countersunk (sunk) head
 - Hole configurations: 1 or 2 holes per wing
 
+### [Roller Bearings](./roller-bearings/README.md)
+
+Roller bearings designed to fit snugly around standard 2020 aluminum extrusion profiles:
+
+- Low-friction rollers using standard 7mm x 10mm nylon spacers
+- Modular snap-fit design for tool-free assembly
+- Secure, low-play fit on 2020 extrusions
+
 ## Features
 
 - **Compatibility**: Designed to fit seamlessly with standard 2020 aluminium extrusion rods.
