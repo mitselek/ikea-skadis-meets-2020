@@ -230,15 +230,19 @@ Mihkel
 Create a CSV with these columns:
 
 ```csv
-Date,Username,Platform,Project_Commented_On,Template_Used,Response_Status,Follow_up_Date,Notes,Link_Provided
+Date_Collected,Username,Profile_URL,Message_URL,Source_Project,Comment_Quality,Engagement_Level,SKADIS_Projects,Last_Active,Priority,Notes,Contact_Status,Template_Used,Response_Date,Response_Type
 ```
 
 Example entries:
 
 ```csv
-2025-06-12,maker123,MakerWorld,Basic SKADIS Hooks,Template 1,Positive,2025-06-19,Interested in center holes,https://makerworld.com/en/models/1503225-simple-skadis-hook#profileId-1572818
-2025-06-12,workshop_guy,MakerWorld,Tool Organization,Template 2,No Response,2025-06-22,Mentioned stability issues,
+2025-06-12,maker123,https://makerworld.com/en/@maker123/upload,https://makerworld.com/en/my/message?recvID=1234567,Basic SKADIS Hooks,High,High,3,2025-06-10,High,"Interested in center holes",Not_Contacted,,,
+2025-06-12,workshop_guy,https://makerworld.com/en/@workshop_guy/upload,https://makerworld.com/en/my/message?recvID=7654321,Tool Organization,Medium,Medium,1,2025-06-08,Medium,"Mentioned stability issues",Not_Contacted,,,
 ```
+
+**See OUTREACH_DATA_COLLECTION.md for detailed contact gathering guide and BROWSER_HELPERS.md for automation scripts.**
+
+**See ADVANCED_OUTREACH_SYSTEM.md, MULTI_PROJECT_INTELLIGENCE.md, and SMART_TARGETING_ENGINE.md for advanced automation features and intelligent targeting capabilities.**
 
 ## Best Practices
 
