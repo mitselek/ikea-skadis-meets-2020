@@ -181,6 +181,12 @@ Complex setup using o-variant hooks with center holes for specialized filament m
 - **Compatibility**: Universal CAD format
 - **Version**: AP242 standard
 
+## Resources
+
+### Download and Print
+
+- **MakerWorld**: [Simple SKÅDIS Hook collection](https://makerworld.com/en/models/1503225-simple-skadis-hook#profileId-1572818)
+
 ---
 
 *These hooks are designed as open-source accessories for the IKEA SKÅDIS system. They are not affiliated with or endorsed by IKEA.*
