@@ -24,14 +24,15 @@
 ### **Step 1: Access the Dashboard**
 
 1. Navigate to any SKÅDIS project on MakerWorld
-2. Click extension icon → "💬 Extract Comments" 
+2. Click extension icon → "💬 Extract Comments"
 3. Click "📧 Send Template Message" (sends your first message)
 4. Click **"📈 Campaign Dashboard"** → **AI Dashboard Opens!**
 
 ### **Step 2: Explore AI Insights**
 
 **🤖 AI Campaign Insights Section:**
-```
+
+```text
 🔥 Outstanding response rate! 18.2% of prospects are responding - your targeting is excellent!
 🎯 Excellent targeting! 73.2% of your contacts are high-quality prospects.
 💎 87 prospects available! Great opportunity to expand your reach.
@@ -68,21 +69,21 @@
 
 **Template Performance:**
 
-```
-📝 "Standard Template" is your most effective template (15 uses). 
+```text
+📝 "Standard Template" is your most effective template (15 uses).
    Consider A/B testing variations.
 ```
 
 **Source Strategy:**
 
-```
-🏆 "simple skadis hook" generates the most prospects (45). 
+```text
+🏆 "simple skadis hook" generates the most prospects (45).
    Look for similar projects.
 ```
 
 **Activity Momentum:**
 
-```
+```text
 🚀 Great momentum! You've sent 12 messages this week. Keep it up!
 📅 No activity this week. Consider reaching out to maintain engagement.
 ```
@@ -165,16 +166,19 @@
 ## 💪 BENEFITS OF AI DASHBOARD
 
 ### **Professional Experience:**
+
 - ✅ **Enterprise-grade interface** feels like professional software
 - ✅ **Data-driven insights** replace guesswork with intelligence
 - ✅ **Visual analytics** make complex data meaningful
 
 ### **Campaign Optimization:**
+
 - 🤖 **Smart recommendations** improve targeting effectiveness
 - 📊 **Performance tracking** shows what's working
 - ⚡ **Real-time insights** enable immediate optimization
 
 ### **Strategic Intelligence:**
+
 - 🎯 **Quality analysis** optimizes prospect selection  
 - 📈 **Response rate tracking** measures campaign effectiveness
 - 🏆 **Source performance** guides strategic planning

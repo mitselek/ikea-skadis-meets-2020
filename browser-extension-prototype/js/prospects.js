@@ -122,11 +122,13 @@ class ProspectsManager {
           </div>
           <div class="prospect-actions">
             <button class="prospect-btn message" ${isContacted ? 'disabled' : ''} 
-                    onclick="sendMessageToProspect('${prospect.username}')">
+                    onclick="sendMessageToProspect('${prospect.username}')"
+                    title="${isContacted ? 'Already contacted this prospect' : 'Send message to this prospect'}">
               📧
             </button>
             <button class="prospect-btn profile" 
-                    onclick="openProspectProfile('${prospect.profileLink}')">
+                    onclick="openProspectProfile('${prospect.profileLink}')"
+                    title="Open prospect's profile in new tab">
               👤
             </button>
           </div>

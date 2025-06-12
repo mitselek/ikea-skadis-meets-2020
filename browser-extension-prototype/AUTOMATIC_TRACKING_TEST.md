@@ -41,7 +41,8 @@
 - 🚀 **Source Analysis** - Which projects generate best prospects
 
 **Sample AI Insights You'll See:**
-```
+
+```text
 🎯 Excellent targeting! 73.2% of your contacts are high-quality prospects.
 💎 87 prospects available! Great opportunity to expand your reach.
 🏆 "simple skadis hook" generates the most prospects (45). Look for similar projects.

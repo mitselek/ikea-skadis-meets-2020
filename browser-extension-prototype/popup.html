@@ -521,12 +521,12 @@
   </div>
 
   <div class="actions">
-    <button id="extract-page">📊 Analyze This Page</button>
-    <button id="extract-comments">💬 Extract Comments</button>
-    <button id="view-prospects">👥 View Prospects</button>
-    <button id="send-template">📧 Send Template Message</button>
-    <button id="view-campaign">📈 Campaign Dashboard</button>
-    <button id="export-csv">💾 Export Tracking Data</button>
+    <button id="extract-page" title="Analyze current MakerWorld page for SKÅDIS relevance and engagement">📊 Analyze This Page</button>
+    <button id="extract-comments" title="Extract quality prospects from comments on this page">💬 Extract Comments</button>
+    <button id="view-prospects" title="View and manage all extracted prospects">👥 View Prospects</button>
+    <button id="send-template" title="Send message to next best uncontacted prospect">📧 Send Template Message</button>
+    <button id="view-campaign" title="View AI-powered campaign analytics and insights">📈 Campaign Dashboard</button>
+    <button id="export-csv" title="Export all tracking data to CSV file">💾 Export Tracking Data</button>
   </div>
 
   <div id="status-message"></div>
@@ -541,7 +541,7 @@
   <div class="dashboard" id="dashboard-view">
     <div class="dashboard-header">
       <h2>📈 Campaign Dashboard</h2>
-      <div class="back-btn" id="back-to-main">← Back</div>
+      <div class="back-btn" id="back-to-main" title="Return to main extension view">← Back</div>
     </div>
 
     <!-- AI Insights Section -->
@@ -598,7 +598,8 @@
         <!-- Recent messages will be listed here -->
       </div>
       <div style="margin-top: 10px;">
-        <button id="simulate-response" style="padding: 6px 12px; font-size: 11px; background: rgba(76, 175, 80, 0.3);">
+        <button id="simulate-response" style="padding: 6px 12px; font-size: 11px; background: rgba(76, 175, 80, 0.3);" 
+                title="Generate test response data to see AI insights and analytics in action">
           📈 Simulate Response (Testing)
         </button>
       </div>
@@ -618,7 +619,8 @@
     <div class="dashboard-header">
       <h2>👥 Prospects Overview</h2>
       <div class="dashboard-nav">
-        <button id="back-to-main-from-prospects" class="nav-btn">← Back to Main</button>
+        <button id="back-to-main-from-prospects" class="nav-btn" 
+                title="Return to main extension view">← Back to Main</button>
       </div>
     </div>
 
@@ -644,12 +646,12 @@
     <div class="prospects-filters">
       <h3>🎯 Filter by Quality</h3>
       <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="High">High</button>
-        <button class="filter-btn" data-filter="Medium">Medium</button>
-        <button class="filter-btn" data-filter="Low">Low</button>
-        <button class="filter-btn" data-filter="uncontacted">Uncontacted</button>
-        <button class="filter-btn" data-filter="contacted">Contacted</button>
+        <button class="filter-btn active" data-filter="all" title="Show all prospects">All</button>
+        <button class="filter-btn" data-filter="High" title="Show only high-quality prospects">High</button>
+        <button class="filter-btn" data-filter="Medium" title="Show only medium-quality prospects">Medium</button>
+        <button class="filter-btn" data-filter="Low" title="Show only low-quality prospects">Low</button>
+        <button class="filter-btn" data-filter="uncontacted" title="Show only prospects not yet contacted">Uncontacted</button>
+        <button class="filter-btn" data-filter="contacted" title="Show only prospects already contacted">Contacted</button>
       </div>
     </div>
 
@@ -663,13 +665,16 @@
 
     <!-- Quick Actions -->
     <div class="prospects-actions">
-      <button id="message-next-prospect" class="action-btn primary">
+      <button id="message-next-prospect" class="action-btn primary" 
+              title="Automatically message the highest quality uncontacted prospect">
         📧 Message Next Best Prospect
       </button>
-      <button id="refresh-prospects" class="action-btn">
+      <button id="refresh-prospects" class="action-btn"
+              title="Reload and refresh the prospects list">
         🔄 Refresh List
       </button>
-      <button id="extract-more-prospects" class="action-btn">
+      <button id="extract-more-prospects" class="action-btn"
+              title="Return to main view to extract more comments from other pages">
         ➕ Extract More Comments
       </button>
     </div>
