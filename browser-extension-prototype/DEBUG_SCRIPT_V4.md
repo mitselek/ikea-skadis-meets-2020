@@ -215,7 +215,7 @@ Based on V3 results, this version looks for the actual comment content structure
 })();
 ```
 
-## What V4 Does Differently:
+## What V4 Does Differently
 
 1. **🔍 Deep text analysis** - Finds all text nodes with engagement keywords
 2. **👤 Profile content mapping** - Associates text content with user profiles  
@@ -223,7 +223,7 @@ Based on V3 results, this version looks for the actual comment content structure
 4. **📊 Smarter scoring** - Better quality assessment
 5. **🎯 MakerWorld-specific patterns** - Looks for their specific comment structure
 
-## Try This:
+## Try This
 
 1. **Stay on the same page** where you ran V3
 2. **Scroll down** to make sure all content is loaded

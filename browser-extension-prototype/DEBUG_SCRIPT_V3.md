@@ -225,7 +225,7 @@ This version tries to find where MakerWorld actually puts comments/reviews. Copy
 })();
 ```
 
-## What This V3 Script Does:
+## What This V3 Script Does
 
 1. **🔍 Searches for comment sections** - Looks for dedicated comment areas
 2. **📋 Finds comment tabs** - Looks for buttons/tabs that might reveal comments  
@@ -233,9 +233,9 @@ This version tries to find where MakerWorld actually puts comments/reviews. Copy
 4. **🎯 Extracts from best section** - Tries to get actual comment content
 5. **💡 Gives recommendations** - Tells you what to try next
 
-## Try This:
+## Try This
 
-1. Go to: https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439
+1. Go to: <https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439>
 2. **Look for any tabs** like "Comments", "Reviews", "Community", etc.
 3. **Scroll down** to make sure everything is loaded
 4. Paste the V3 script and run it

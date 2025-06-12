@@ -37,7 +37,7 @@ A **super simple** prototype browser extension that takes your existing outreach
 
 ## ✨ What Makes This Less Intimidating
 
-### It's Just Your Existing Code!
+### It's Just Your Existing Code
 
 - Same extraction logic you already have
 - Same templates you already wrote  

@@ -14,6 +14,7 @@ After extensive testing and debugging, this browser extension now successfully e
 ## Recent Breakthrough
 
 **V4 Comment Extraction** successfully finds real user feedback like:
+
 - "perfect full plate print . I just adjusted the settings...my wife is very happy. 👌🏼😎"  
 - "fits very nicely and it's quite solid, good job!"
 - "Awesome print! perfect tolerances!"
@@ -31,32 +32,39 @@ After extensive testing and debugging, this browser extension now successfully e
 ## Usage
 
 ### 1. Navigate to MakerWorld
+
 Go to any MakerWorld page with SKÅDIS-related content, such as:
-- https://makerworld.com/en/models/23592-ikea-skadis-hook
+
+- <https://makerworld.com/en/models/23592-ikea-skadis-hook>
 
 ### 2. Analyze the Page
+
 - Click the extension icon
 - Click **"Analyze Current Page"**
 - See relevance score and engagement metrics
 
-### 3. Extract Comments  
-- Click **"Extract Comments"** 
+### 3. Extract Comments
+
+- Click **"Extract Comments"**
 - The V4 algorithm will find user profiles and their associated feedback
 - High-quality prospects will be automatically scored and saved
 
 ### 4. View Your Prospects
+
 - Click **"View Prospects"** to see extracted users
 - Review their feedback quality (High/Medium/Low)
 - See engagement scores and profile links
 
 ### 5. Generate Messages
-- Click **"Send Template Message"** 
+
+- Click **"Send Template Message"**
 - A personalized message will be copied to your clipboard
 - Paste it into MakerWorld's messaging system
 
 ## Success Metrics
 
 **Latest Test Results:**
+
 - ✅ Found **287 prospects** with meaningful content (from 996 profile links!)
 - ✅ **28.8% conversion rate** from profile links to quality prospects
 - ✅ Quality scoring: **High (score 11-13)**, Medium, Low categories  
@@ -64,6 +72,7 @@ Go to any MakerWorld page with SKÅDIS-related content, such as:
 - ✅ Real feedback: Actual printing experiences and reviews
 
 **Sample High-Quality Prospects Found:**
+
 - @Papi: "fits perfectly, good resistance for hanging things"
 - @ozonejunkie: "Printed in PETG, works great and fits great"  
 - @wanpo: "Strong and fitted perfectly"
@@ -81,7 +90,7 @@ The extension uses a sophisticated **V4 Deep Analysis** approach:
 
 ## Files Structure
 
-```
+```text
 browser-extension-prototype/
 ├── manifest.json          # Extension configuration  
 ├── popup.html            # Extension popup interface
@@ -103,6 +112,7 @@ The extension is now **production-ready** for SKÅDIS outreach campaigns! Consid
 ## Contributing
 
 Found issues or have improvements? The extension is built for expansion:
+
 - Add new extraction strategies to `extractCommentsFunction()`
 - Enhance quality scoring algorithms
 - Improve message personalization

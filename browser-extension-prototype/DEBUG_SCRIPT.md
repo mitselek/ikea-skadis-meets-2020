@@ -154,9 +154,9 @@ Copy and paste this into the browser console (F12) on the MakerWorld page to tes
 })();
 ```
 
-## Instructions:
+## Instructions
 
-1. **Go to the MakerWorld page**: https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439
+1. **Go to the MakerWorld page**: <https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439>
 2. **Open browser console**: Press F12, go to Console tab
 3. **Scroll down** to load any comments that might be dynamically loaded
 4. **Paste the script above** and press Enter

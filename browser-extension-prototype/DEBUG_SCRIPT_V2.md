@@ -173,16 +173,18 @@ This version is specifically designed for MakerWorld's comment structure. Copy a
 })();
 ```
 
-## Try This Improved Version!
+## Try This Improved Version
 
 This V2 script is much smarter about:
+
 - **Finding comment text** near profile links
 - **Quality scoring** based on positive keywords
 - **Better text cleaning** to remove UI elements
 - **Detailed debugging** to show what it's finding
 
 **Instructions:**
-1. Go to the MakerWorld page: https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439
+
+1. Go to the MakerWorld page: <https://makerworld.com/en/models/23592-ikea-skadis-hook#profileId-28439>
 2. **Make sure to scroll down** to load all comments first!
 3. Press F12 → Console tab
 4. Paste the V2 script above
