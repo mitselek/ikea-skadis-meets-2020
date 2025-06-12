@@ -11,6 +11,7 @@
 ```
 
 **New Features:**
+
 - ✅ **Professional Dashboard UI** replaces basic popups
 - ✅ **AI-Powered Insights** with smart recommendations
 - ✅ **Real Response Rate Tracking** for campaign optimization
@@ -21,6 +22,7 @@
 ## 🤖 AI DASHBOARD WALKTHROUGH
 
 ### **Step 1: Access the Dashboard**
+
 1. Navigate to any SKÅDIS project on MakerWorld
 2. Click extension icon → "💬 Extract Comments" 
 3. Click "📧 Send Template Message" (sends your first message)
@@ -36,12 +38,14 @@
 ```
 
 **📊 Performance Overview:**
+
 - **Messages Sent:** Real-time count
 - **Response Rate:** Calculated from actual responses
 - **Uncontacted:** Available prospects remaining  
 - **Days Active:** Campaign duration
 
 **🎯 Quality Distribution:**
+
 - Visual progress bars showing High/Medium/Low breakdown
 - Color-coded quality indicators (Green/Orange/Red)
 - Percentage calculations for optimization
@@ -53,6 +57,7 @@
 ### **Smart Response Rate Tracking**
 
 **Automatic Intelligence:**
+
 ```javascript
 // AI tracks patterns and provides insights:
 "Response rate: 12.3%. Industry average is 5-10%, you're doing well!"
@@ -62,18 +67,21 @@
 ### **Campaign Optimization Recommendations**
 
 **Template Performance:**
+
 ```
 📝 "Standard Template" is your most effective template (15 uses). 
    Consider A/B testing variations.
 ```
 
 **Source Strategy:**
+
 ```
 🏆 "simple skadis hook" generates the most prospects (45). 
    Look for similar projects.
 ```
 
 **Activity Momentum:**
+
 ```
 🚀 Great momentum! You've sent 12 messages this week. Keep it up!
 📅 No activity this week. Consider reaching out to maintain engagement.
@@ -84,20 +92,24 @@
 ## 💡 AI INSIGHTS EXAMPLES
 
 ### **Quality Targeting Intelligence**
+
 - `🎯 Excellent targeting! 73.2% high-quality prospects`
 - `⚡ Focus on quality: Only 28% high-quality prospects`
 
 ### **Response Rate Analysis**
+
 - `🔥 Outstanding response rate! 18.2% responding`  
 - `📈 Good response rate: 11.5%. Above industry average!`
 - `⚡ Response rate: 6.8%. Test different message templates`
 
 ### **Prospect Management**
+
 - `💎 87 prospects available! Great expansion opportunity`
 - `⏰ Only 8 prospects left. Find new SKÅDIS projects`
 - `✅ All prospects contacted! Time to expand reach`
 
 ### **Performance Optimization**
+
 - `🏆 "simple skadis hook" generates most prospects (45)`
 - `📝 Template A converts better - focus your efforts there`
 - `🎪 Tuesday sends get 25% more responses`
@@ -107,17 +119,20 @@
 ## 🎨 VISUAL DASHBOARD FEATURES
 
 ### **Modern UI Elements:**
+
 - **Gradient backgrounds** with professional design
 - **Progress bars** with smooth animations
 - **Card-based layout** for organized information
 - **Color-coded metrics** for instant feedback
 
 ### **Interactive Navigation:**
+
 - **Seamless switching** between main view and dashboard
 - **← Back button** for easy navigation  
 - **Real-time updates** as campaign data changes
 
 ### **Visual Analytics:**
+
 - **Quality breakdown charts** with percentage calculations
 - **Source project rankings** showing top performers
 - **Activity timeline** with color-coded quality levels
