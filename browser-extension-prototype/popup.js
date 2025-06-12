@@ -530,29 +530,20 @@ async function showMessagePreview() {
     // Find the best uncontacted prospect
     const bestProspect = uncontactedProspects.find(p => p.quality === 'High') || uncontactedProspects[0];
     
-    // Generate message
-    const messageResult = await messagingManager.generateQuickMessageWithTemplate(bestProspect);
-    
-    // Ensure we have a valid message string
-    let finalMessage;
-    if (messageResult && typeof messageResult === 'object' && messageResult.message) {
-      finalMessage = messageResult.message;
-    } else if (typeof messageResult === 'string') {
-      finalMessage = messageResult;
-    } else {
-      throw new Error('No valid message generated');
-    }
-    
-    // Store current message data for later use
+    // Store initial data without message
     currentMessageData = {
       prospect: bestProspect,
-      message: finalMessage,
-      templateUsed: messageResult.templateUsed || 'Standard Template',
-      uncontactedCount: uncontactedProspects.length
+      message: '🤖 Generating personalized message...',
+      templateUsed: 'AI Generated',
+      uncontactedCount: uncontactedProspects.length,
+      isGenerating: true
     };
     
-    // Show preview
+    // Show preview immediately with loading state
     displayMessagePreview(currentMessageData);
+    
+    // Generate message in the background
+    generateMessageInRealTime(bestProspect);
     
   } catch (error) {
     showStatus('Error generating message preview: ' + error.message, 'error');
@@ -568,7 +559,30 @@ function displayMessagePreview(data) {
   // Populate preview data
   document.getElementById('preview-prospect-name').textContent = `👤 @${data.prospect.username}`;
   document.getElementById('preview-prospect-platform').textContent = `📱 ${data.prospect.platform || 'Unknown'} • Quality: ${data.prospect.quality}`;
-  document.getElementById('preview-message').value = data.message;
+  
+  // Set message with appropriate state
+  const messageTextarea = document.getElementById('preview-message');
+  messageTextarea.value = data.message;
+  
+  // If generating, make it readonly and show loading
+  if (data.isGenerating) {
+    messageTextarea.readOnly = true;
+    messageTextarea.style.fontStyle = 'italic';
+    messageTextarea.style.color = '#888';
+    
+    // Disable action buttons during generation
+    const editBtn = document.getElementById('edit-message');
+    const regenBtn = document.getElementById('regenerate-message');
+    const sendBtn = document.getElementById('send-final-message');
+    
+    if (editBtn) editBtn.disabled = true;
+    if (regenBtn) regenBtn.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+  } else {
+    messageTextarea.readOnly = true;
+    messageTextarea.style.fontStyle = 'normal';
+    messageTextarea.style.color = '';
+  }
   
   // Add event listeners for preview actions
   setupPreviewEventListeners();
@@ -646,27 +660,37 @@ function saveMessageChanges() {
 
 async function regenerateMessage() {
   try {
-    showStatus('🔄 Regenerating message...', 'success');
+    // Set loading state
+    currentMessageData.isGenerating = true;
+    currentMessageData.message = '🔄 Regenerating message...';
     
-    const messageResult = await messagingManager.generateQuickMessageWithTemplate(currentMessageData.prospect);
-    
-    let finalMessage;
-    if (messageResult && typeof messageResult === 'object' && messageResult.message) {
-      finalMessage = messageResult.message;
-    } else if (typeof messageResult === 'string') {
-      finalMessage = messageResult;
-    } else {
-      throw new Error('No valid message generated');
+    // Update UI to show loading
+    const messageTextarea = document.getElementById('preview-message');
+    if (messageTextarea) {
+      messageTextarea.value = currentMessageData.message;
+      messageTextarea.readOnly = true;
+      messageTextarea.style.fontStyle = 'italic';
+      messageTextarea.style.color = '#888';
     }
     
-    currentMessageData.message = finalMessage;
-    currentMessageData.templateUsed = messageResult.templateUsed || 'Standard Template';
+    // Disable buttons during generation
+    const editBtn = document.getElementById('edit-message');
+    const regenBtn = document.getElementById('regenerate-message');
+    const sendBtn = document.getElementById('send-final-message');
     
-    document.getElementById('preview-message').value = finalMessage;
-    showStatus('✅ Message regenerated!', 'success');
+    if (editBtn) editBtn.disabled = true;
+    if (regenBtn) regenBtn.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+    
+    showStatus('🔄 Regenerating message...', 'success');
+    
+    // Generate new message in real-time
+    await generateMessageInRealTime(currentMessageData.prospect);
     
   } catch (error) {
+    currentMessageData.isGenerating = false;
     showStatus('Error regenerating message: ' + error.message, 'error');
+    enablePreviewActions();
   }
 }
 
@@ -693,6 +717,12 @@ async function applyChatChanges() {
 
 async function sendFinalMessage() {
   try {
+    // Check if message is still generating
+    if (currentMessageData.isGenerating) {
+      showStatus('⏳ Please wait for message generation to complete...', 'warning');
+      return;
+    }
+    
     showStatus('📤 Sending message...', 'success');
     
     // Debug logging
@@ -760,3 +790,61 @@ window.quickAITest = function() {
 console.log('🧪 AI Test functions loaded:');
 console.log('   - testAISystem() - Comprehensive system test');
 console.log('   - quickAITest() - Quick setup test');
+
+// New function to generate message in real-time
+async function generateMessageInRealTime(prospect) {
+  try {
+    // Generate message
+    const messageResult = await messagingManager.generateQuickMessageWithTemplate(prospect);
+    
+    // Ensure we have a valid message string
+    let finalMessage;
+    if (messageResult && typeof messageResult === 'object' && messageResult.message) {
+      finalMessage = messageResult.message;
+    } else if (typeof messageResult === 'string') {
+      finalMessage = messageResult;
+    } else {
+      throw new Error('No valid message generated');
+    }
+    
+    // Update current message data
+    currentMessageData.message = finalMessage;
+    currentMessageData.templateUsed = messageResult.templateUsed || 'Standard Template';
+    currentMessageData.isGenerating = false;
+    
+    // Update the preview with the real message
+    const messageTextarea = document.getElementById('preview-message');
+    if (messageTextarea) {
+      messageTextarea.value = finalMessage;
+      messageTextarea.readOnly = true; // Ensure it's readable after generation
+    }
+    
+    // Enable the action buttons
+    enablePreviewActions();
+    
+    showStatus('✅ Message generated successfully!', 'success');
+    
+  } catch (error) {
+    currentMessageData.message = 'Error generating message: ' + error.message;
+    currentMessageData.isGenerating = false;
+    
+    const messageTextarea = document.getElementById('preview-message');
+    if (messageTextarea) {
+      messageTextarea.value = currentMessageData.message;
+    }
+    
+    showStatus('Error generating message: ' + error.message, 'error');
+    console.error('Real-time message generation error:', error);
+  }
+}
+
+function enablePreviewActions() {
+  // Re-enable buttons that might have been disabled during generation
+  const editBtn = document.getElementById('edit-message');
+  const regenBtn = document.getElementById('regenerate-message');
+  const sendBtn = document.getElementById('send-final-message');
+  
+  if (editBtn) editBtn.disabled = false;
+  if (regenBtn) regenBtn.disabled = false;
+  if (sendBtn) sendBtn.disabled = false;
+}
