@@ -3,6 +3,7 @@
 ## ⚡ Quick Test (2 minutes)
 
 ### 1. Load Extension
+
 ```bash
 # Open Chrome → chrome://extensions/
 # Enable "Developer mode" → "Load unpacked"
@@ -10,6 +11,7 @@
 ```
 
 ### 2. Test Automatic Tracking
+
 1. **Go to any SKÅDIS project**: <https://makerworld.com/en/models/1503225-simple-skadis-hook>
 2. **Click extension icon** in Chrome toolbar
 3. **Click "💬 Extract Comments"** → Should find 287+ prospects
@@ -17,7 +19,9 @@
 5. **Click "📈 Campaign Dashboard"** → View tracking data
 
 ### 3. Verify Tracking Works
+
 **What happens automatically:**
+
 - ✅ Message copied to clipboard
 - ✅ Prospect logged with complete details
 - ✅ Campaign stats updated (+1 message sent)
@@ -29,6 +33,7 @@
 ## 🎯 WHAT GETS TRACKED AUTOMATICALLY
 
 ### **Complete Log Entry Created:**
+
 ```javascript
 {
   timestamp: "2025-06-12T15:30:00.000Z",
@@ -43,12 +48,14 @@
 ```
 
 ### **Campaign Analytics Updated:**
+
 - **Total Messages:** +1
 - **Quality Breakdown:** High/Medium/Low counts
 - **Source Projects:** Which pages generate prospects
 - **Template Usage:** Which messages are used most
 
 ### **CSV Export Ready:**
+
 - Compatible with your existing `outreach_contacts.csv`
 - Downloadable backup with date stamps
 - Import-ready for external tools
@@ -58,7 +65,8 @@
 ## 📊 REAL-TIME DASHBOARD
 
 **View with "📈 Campaign Dashboard" button:**
-```
+
+```text
 📈 CAMPAIGN DASHBOARD
 
 📊 OVERVIEW:
@@ -88,15 +96,17 @@ simple skadis hook: 5 prospects
 ## 💾 EXPORT YOUR DATA
 
 **Click "💾 Export Tracking Data":**
+
 - Downloads: `skadis_outreach_tracking_2025-06-12.csv`
 - Compatible with your existing tracking system
 - Backup and analyze in Excel/Google Sheets
 
 ---
 
-## 🚀 READY TO USE!
+## 🚀 READY TO USE
 
 **Your automatic tracking system is now:**
+
 - ✅ **Finding prospects** (287+ per page)
 - ✅ **Tracking every message** automatically
 - ✅ **Providing real-time analytics**
