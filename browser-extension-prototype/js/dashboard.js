@@ -23,7 +23,7 @@ class DashboardManager {
 
   // 🤖 AI-POWERED DASHBOARD INSIGHTS
   async loadDashboardData() {
-    const result = await chrome.storage.local.get(['campaignStats', 'outreachLog', 'prospects']);
+    const result = await chrome.storage.local.get(['campaignStats', 'outreachLog', 'prospects', 'aiAnalytics']);
     const stats = result.campaignStats || {
       totalMessages: 0,
       messagesByMonth: {},
@@ -33,6 +33,7 @@ class DashboardManager {
     };
     const log = result.outreachLog || [];
     const prospects = result.prospects || [];
+    const aiAnalytics = result.aiAnalytics || [];
 
     // Calculate duplicate prevention stats
     const contactedUsernames = new Set(log.map(entry => entry.username.toLowerCase()));
@@ -51,8 +52,8 @@ class DashboardManager {
       Math.ceil((new Date() - new Date(log[0].date)) / (1000 * 60 * 60 * 24)) || 1 : 0;
     document.getElementById('campaign-days').textContent = campaignDays;
 
-    // Generate AI insights
-    this.generateAIInsights(stats, log, prospects, uncontactedCount);
+    // Generate AI insights (now includes AI messaging insights)
+    this.generateAIInsights(stats, log, prospects, uncontactedCount, aiAnalytics);
     
     // Update quality breakdown
     this.updateQualityBreakdown(stats.qualityBreakdown);
@@ -65,10 +66,13 @@ class DashboardManager {
     
     // Update source projects
     this.updateSourceProjects(stats.sourceProjects);
+
+    // Update AI messaging analytics
+    this.updateAIMessagingAnalytics(aiAnalytics);
   }
 
   // 🤖 AI INSIGHTS GENERATOR
-  generateAIInsights(stats, log, prospects, uncontactedCount) {
+  generateAIInsights(stats, log, prospects, uncontactedCount, aiAnalytics) {
     const insights = [];
     
     // Response rate insights
@@ -188,6 +192,51 @@ class DashboardManager {
         text: `"${bestSource[0]}" generates the most prospects (${bestSource[1]}). Look for similar projects.`,
         type: 'strategy'
       });
+    }
+
+    // AI messaging insights
+    if (aiAnalytics && aiAnalytics.length > 0) {
+      const avgConfidence = (aiAnalytics.reduce((sum, entry) => sum + entry.ai.confidence, 0) / aiAnalytics.length * 100).toFixed(1);
+      
+      if (avgConfidence > 80) {
+        insights.push({
+          icon: '🤖',
+          text: `Excellent AI performance! ${avgConfidence}% average confidence in message personalization.`,
+          type: 'success'
+        });
+      } else if (avgConfidence > 60) {
+        insights.push({
+          icon: '🎯',
+          text: `Good AI targeting: ${avgConfidence}% confidence. AI is learning your prospect patterns well.`,
+          type: 'success'
+        });
+      }
+
+      // Template performance insights
+      const templateUsage = {};
+      aiAnalytics.forEach(entry => {
+        const template = entry.ai.templateUsed;
+        templateUsage[template] = (templateUsage[template] || 0) + 1;
+      });
+      
+      const mostUsedAITemplate = Object.entries(templateUsage).sort(([,a], [,b]) => b - a)[0];
+      if (mostUsedAITemplate) {
+        insights.push({
+          icon: '✨',
+          text: `AI prefers "${mostUsedAITemplate[0].replace('AI: ', '')}" template (${mostUsedAITemplate[1]} uses). Personalization is working!`,
+          type: 'optimization'
+        });
+      }
+
+      // Personalization insights
+      const avgPersonalizations = (aiAnalytics.reduce((sum, entry) => sum + entry.message.personalizedElements, 0) / aiAnalytics.length).toFixed(1);
+      if (avgPersonalizations > 3) {
+        insights.push({
+          icon: '🎨',
+          text: `High personalization: Average ${avgPersonalizations} custom elements per message. Great targeting depth!`,
+          type: 'success'
+        });
+      }
     }
 
     // Render insights
@@ -310,6 +359,62 @@ class DashboardManager {
           </div>
         </div>
       `).join('');
+  }
+
+  updateAIMessagingAnalytics(aiAnalytics) {
+    const container = document.getElementById('ai-messaging-analytics');
+    
+    if (!aiAnalytics || aiAnalytics.length === 0) {
+      container.innerHTML = '<p style="opacity: 0.7; font-size: 12px;">Start using AI messaging to see analytics</p>';
+      return;
+    }
+
+    // Calculate AI analytics metrics
+    const totalAIMessages = aiAnalytics.length;
+    const avgConfidence = (aiAnalytics.reduce((sum, entry) => sum + entry.ai.confidence, 0) / totalAIMessages * 100).toFixed(1);
+    const avgPersonalization = (aiAnalytics.reduce((sum, entry) => sum + entry.message.personalizedElements, 0) / totalAIMessages).toFixed(1);
+    
+    // Template usage analysis
+    const templateUsage = {};
+    aiAnalytics.forEach(entry => {
+      const template = entry.ai.templateUsed;
+      templateUsage[template] = (templateUsage[template] || 0) + 1;
+    });
+    
+    const mostUsedTemplate = Object.entries(templateUsage).sort(([,a], [,b]) => b - a)[0];
+
+    container.innerHTML = `
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-value">${totalAIMessages}</div>
+          <div class="metric-label">AI Messages</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${avgConfidence}%</div>
+          <div class="metric-label">Avg Confidence</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${avgPersonalization}</div>
+          <div class="metric-label">Avg Personalizations</div>
+        </div>
+      </div>
+      
+      ${mostUsedTemplate ? `
+        <div style="margin-top: 10px; padding: 8px; background: rgba(76, 175, 80, 0.2); border-radius: 4px; font-size: 12px;">
+          🎯 Most effective: <strong>${mostUsedTemplate[0]}</strong> (${mostUsedTemplate[1]} uses)
+        </div>
+      ` : ''}
+      
+      <div style="margin-top: 10px;">
+        <div style="font-size: 11px; margin-bottom: 5px;">AI Template Distribution:</div>
+        ${Object.entries(templateUsage).map(([template, count]) => `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 11px;">
+            <span>${template.replace('AI: ', '')}</span>
+            <span>${count} (${(count/totalAIMessages*100).toFixed(1)}%)</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
   }
 
   showStatus(message, type) {

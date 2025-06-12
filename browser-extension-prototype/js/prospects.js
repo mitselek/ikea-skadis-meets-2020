@@ -4,6 +4,9 @@
 class ProspectsManager {
   constructor() {
     this.currentFilter = 'all';
+    
+    // Initialize AI messaging if available
+    this.aiMessaging = window.AIMessagingManager ? new window.AIMessagingManager() : null;
   }
 
   // 👥 VIEW PROSPECTS - Modern UI Version
@@ -193,6 +196,18 @@ class ProspectsManager {
   }
 
   generateQuickMessage(prospect) {
+    // 🤖 Try AI-generated message first
+    if (this.aiMessaging) {
+      try {
+        const aiResult = this.aiMessaging.generatePersonalizedMessage(prospect);
+        console.log('✨ AI Message Generated for prospect:', prospect.username);
+        return aiResult.message;
+      } catch (error) {
+        console.error('AI message generation failed, using fallback:', error);
+      }
+    }
+    
+    // 📝 Fallback to standard template
     return `Hi ${prospect.username},
 
 Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusiast!

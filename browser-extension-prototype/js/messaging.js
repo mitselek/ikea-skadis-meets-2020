@@ -5,8 +5,18 @@ class MessagingManager {
   constructor() {
     this.templates = {
       standard: 'Standard Template',
-      prospects: 'Prospects View Template'
+      prospects: 'Prospects View Template',
+      ai: 'AI Generated'
     };
+    
+    // Initialize AI messaging if available
+    this.aiMessaging = window.AIMessagingManager ? new window.AIMessagingManager() : null;
+    
+    if (this.aiMessaging) {
+      console.log('✅ AI messaging system initialized successfully');
+    } else {
+      console.log('⚠️ AI messaging system not available - using standard templates');
+    }
   }
 
   async quickMessage() {
@@ -38,14 +48,14 @@ class MessagingManager {
       // Find the best uncontacted prospect
       const bestProspect = uncontactedProspects.find(p => p.quality === 'High') || uncontactedProspects[0];
       
-      // Generate a quick message
-      const message = this.generateQuickMessage(bestProspect);
+      // Generate a quick message and get template info
+      const messageResult = this.generateQuickMessageWithTemplate(bestProspect);
       
       // Copy to clipboard
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(messageResult.message);
       
-      // 🚀 AUTOMATIC MESSAGE TRACKING - Log this outreach!
-      await this.logOutreachMessage(bestProspect, message, this.templates.standard);
+      // 🚀 AUTOMATIC MESSAGE TRACKING - Log this outreach with correct template!
+      await this.logOutreachMessage(bestProspect, messageResult.message, messageResult.templateUsed);
       
       // 🌐 AUTO-OPEN USER PROFILE - Open user's profile in new tab for easy messaging
       try {
@@ -67,7 +77,39 @@ class MessagingManager {
     }
   }
   
+  generateQuickMessageWithTemplate(prospect) {
+    // 🤖 Try AI-generated message first
+    if (this.aiMessaging) {
+      try {
+        const aiResult = this.aiMessaging.generatePersonalizedMessage(prospect);
+        console.log(`✨ AI Generated ${aiResult.templateUsed} for @${prospect.username}`);
+        
+        // Store AI analytics for dashboard
+        this.storeAIAnalytics(prospect, aiResult);
+        
+        return {
+          message: aiResult.message,
+          templateUsed: aiResult.templateUsed
+        };
+      } catch (error) {
+        console.error('❌ AI message generation failed, using fallback:', error);
+      }
+    }
+    
+    // 📝 Fallback to standard template
+    console.log(`📝 Using standard template for @${prospect.username}`);
+    return {
+      message: this.generateStandardMessage(prospect),
+      templateUsed: this.templates.standard
+    };
+  }
+
+  // Legacy method for backwards compatibility
   generateQuickMessage(prospect) {
+    return this.generateQuickMessageWithTemplate(prospect).message;
+  }
+
+  generateStandardMessage(prospect) {
     return `Hi ${prospect.username},
 
 Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusiast!
@@ -81,6 +123,45 @@ Would love to hear your thoughts if you check them out!
 
 Best,
 Mihkel`;
+  }
+
+  async storeAIAnalytics(prospect, aiResult) {
+    try {
+      const result = await chrome.storage.local.get(['aiAnalytics']);
+      const analytics = result.aiAnalytics || [];
+      
+      const analyticsEntry = {
+        timestamp: new Date().toISOString(),
+        prospect: {
+          username: prospect.username,
+          quality: prospect.quality,
+          commentLength: prospect.text.length
+        },
+        ai: {
+          templateUsed: aiResult.templateUsed,
+          confidence: aiResult.confidence,
+          personalizationCount: Object.keys(aiResult.personalizations || {}).length
+        },
+        message: {
+          length: aiResult.message.length,
+          personalizedElements: Object.keys(aiResult.personalizations || {}).filter(key => 
+            aiResult.personalizations[key] && aiResult.personalizations[key].length > 0
+          ).length
+        }
+      };
+      
+      analytics.push(analyticsEntry);
+      
+      // Keep only last 100 entries
+      if (analytics.length > 100) {
+        analytics.splice(0, analytics.length - 100);
+      }
+      
+      await chrome.storage.local.set({ aiAnalytics: analytics });
+      
+    } catch (error) {
+      console.error('Error storing AI analytics:', error);
+    }
   }
 
   // 🎯 AUTOMATIC MESSAGE TRACKING SYSTEM

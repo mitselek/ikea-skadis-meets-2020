@@ -142,3 +142,72 @@ function showStatus(message, type) {
     }, 5000);
   }
 }
+
+// 🔍 DEBUG FUNCTIONS - Remove after fixing
+window.debugAI = function() {
+  console.log('=== AI SYSTEM DIAGNOSTIC ===');
+  console.log('1. AIMessagingManager:', typeof window.AIMessagingManager);
+  console.log('2. MessagingManager:', typeof window.MessagingManager);
+  console.log('3. messagingManager instance:', typeof window.messagingManager);
+
+  if (window.messagingManager) {
+    console.log('4. AI instance:', !!window.messagingManager.aiMessaging);
+    console.log('5. AI type:', typeof window.messagingManager.aiMessaging);
+  }
+
+  // Test manual creation
+  if (window.AIMessagingManager) {
+    try {
+      const testAI = new window.AIMessagingManager();
+      console.log('6. Manual AI creation: SUCCESS');
+      console.log('7. AI templates available:', Object.keys(testAI.messageTemplates));
+    } catch (error) {
+      console.log('6. Manual AI creation: FAILED', error);
+    }
+  } else {
+    console.log('6. Cannot test - AIMessagingManager not available');
+  }
+};
+
+window.testAIMessage = function() {
+  console.log('🧪 Testing AI message generation...');
+  
+  const testProspect = {
+    username: 'TestUser',
+    text: 'These look great! What layer height and infill settings work best?',
+    quality: 'High',
+    source: 'https://makerworld.com/en/models/1503225-simple-skadis-hook'
+  };
+  
+  if (window.messagingManager && window.messagingManager.aiMessaging) {
+    try {
+      const result = window.messagingManager.aiMessaging.generatePersonalizedMessage(testProspect);
+      console.log('✅ AI Test Result:', result);
+      return result;
+    } catch (error) {
+      console.log('❌ AI Test Failed:', error);
+      return null;
+    }
+  } else {
+    console.log('❌ AI system not available');
+    return null;
+  }
+};
+
+window.forceReinitializeAI = function() {
+  console.log('🔧 Force re-initializing AI system...');
+  
+  if (window.messagingManager && window.AIMessagingManager) {
+    try {
+      window.messagingManager.aiMessaging = new window.AIMessagingManager();
+      console.log('✅ AI system re-initialized successfully');
+      return true;
+    } catch (error) {
+      console.log('❌ Re-initialization failed:', error);
+      return false;
+    }
+  } else {
+    console.log('❌ Required components not available');
+    return false;
+  }
+};
