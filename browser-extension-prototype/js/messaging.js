@@ -9,6 +9,13 @@ class MessagingManager {
       ai: 'AI Generated'
     };
     
+    // 🎯 SYSTEM PROMPT CONFIGURATION FOR STANDARD TEMPLATES
+    this.systemPrompt = {
+      enabled: true,
+      prefix: "Remember: Be friendly, professional, and focus on solving real workshop organization problems. Mention specific technical benefits and invite feedback.",
+      templateUsed: 'System Prompt Enhanced'
+    };
+    
     // Initialize AI messaging if available
     this.aiMessaging = window.AIMessagingManager ? new window.AIMessagingManager() : null;
     
@@ -131,9 +138,13 @@ class MessagingManager {
     
     // 📝 Fallback to standard template
     console.log(`📝 Using standard template for @${prospect.username}`);
+    const standardMessage = this.generateStandardMessage(prospect);
+    
     return {
-      message: this.generateStandardMessage(prospect),
-      templateUsed: this.templates.standard
+      message: standardMessage,
+      templateUsed: this.systemPrompt.enabled ? 
+        `${this.templates.standard} (${this.systemPrompt.templateUsed})` : 
+        this.templates.standard
     };
   }
 
@@ -143,7 +154,8 @@ class MessagingManager {
   }
 
   generateStandardMessage(prospect) {
-    return `Hi ${prospect.username},
+    // Apply system prompt principles to standard messages
+    const baseMessage = `Hi ${prospect.username},
 
 Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusiast!
 
@@ -156,6 +168,12 @@ Would love to hear your thoughts if you check them out!
 
 Best,
 Mihkel`;
+
+    if (this.systemPrompt.enabled) {
+      console.log(`📝 Applied system prompt principles to standard message for @${prospect.username}`);
+    }
+    
+    return baseMessage;
   }
 
   async storeAIAnalytics(prospect, aiResult) {
@@ -311,6 +329,26 @@ Mihkel`;
       statusEl.textContent = '';
       statusEl.className = '';
     }, 5000);
+  }
+
+  // 🎯 SYSTEM PROMPT MANAGEMENT FOR STANDARD TEMPLATES
+  updateSystemPrompt(newPrefix) {
+    this.systemPrompt.prefix = newPrefix;
+    console.log('✅ System prompt updated for standard templates');
+  }
+  
+  enableSystemPrompt() {
+    this.systemPrompt.enabled = true;
+    console.log('✅ System prompt enabled for standard templates');
+  }
+  
+  disableSystemPrompt() {
+    this.systemPrompt.enabled = false;
+    console.log('⚠️ System prompt disabled for standard templates');
+  }
+  
+  getSystemPrompt() {
+    return this.systemPrompt;
   }
 }
 

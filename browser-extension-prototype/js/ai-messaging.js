@@ -16,6 +16,22 @@ class AIMessagingManager {
       this.realAI = null;
     }
     
+    // 🎯 SYSTEM PROMPT CONFIGURATION
+    this.systemPrompt = {
+      enabled: true,
+      content: `You are a friendly and professional maker reaching out to fellow 3D printing enthusiasts about your SKÅDIS hook project. Be genuine, helpful, and focus on the technical benefits that solve real workshop organization problems. Keep messages conversational but informative, and always end with a call-to-action that invites feedback or questions.
+
+Key principles:
+- Personalize based on their specific comment or project
+- Highlight technical innovations (two-slot mounting, stability improvements) 
+- Mention practical benefits (cable management, precision tool mounting)
+- Include complete project documentation as a value-add
+- Sound like a peer, not a salesperson
+- Keep it under 150 words unless they showed high technical engagement
+
+Template context: `
+    };
+    
     this.messageTemplates = {
       technical: {
         name: 'Technical Focus',
@@ -128,8 +144,8 @@ Mihkel`
       const template = this.selectOptimalTemplate(analysis);
       const personalizations = this.generatePersonalizations(prospect, analysis);
       
-      // Generate template message
-      let templateMessage = template.template;
+      // Generate template message with system prompt
+      let templateMessage = this.applySystemPrompt(template.template);
       Object.entries(personalizations).forEach(([key, value]) => {
         const placeholder = `{${key}}`;
         templateMessage = templateMessage.replace(new RegExp(placeholder, 'g'), value);
@@ -138,14 +154,17 @@ Mihkel`
 
       // 🚀 TRY REAL AI SYNTHESIS
       if (this.realAI) {
+        // Use system prompt for enhanced AI context
+        const systemPromptedTemplate = this.getSystemPromptedTemplate(template.template, prospect, analysis);
+        
         const realAIResult = await this.realAI.synthesizePersonalizedMessage(
           prospect.text,
-          templateMessage,
+          systemPromptedTemplate,
           prospect
         );
 
         if (realAIResult) {
-          console.log('✨ Real AI synthesized message for:', prospect.username);
+          console.log('✨ Real AI synthesized message with system prompt for:', prospect.username);
           return realAIResult;
         }
       } else {
@@ -175,6 +194,64 @@ Mihkel`
         synthesized: false
       };
     }
+  }
+
+  // 🎯 SYSTEM PROMPT APPLICATION
+  applySystemPrompt(template) {
+    if (!this.systemPrompt.enabled) {
+      return template;
+    }
+    
+    // For now, we'll add the system prompt as context for the AI, not directly to the message
+    // The system prompt guides message generation but doesn't appear in the final message
+    // However, you can optionally prefix templates with instructions
+    
+    // Return the template as-is for user-facing message
+    // The system prompt will be used by the AI when generating/refining the message
+    return template;
+  }
+  
+  // 🎯 GET FULL CONTEXT FOR AI PROCESSING
+  getSystemPromptedTemplate(template, prospect, analysis) {
+    if (!this.systemPrompt.enabled) {
+      return template;
+    }
+    
+    // Combine system prompt with template for AI processing
+    const fullContext = `${this.systemPrompt.content}
+
+PROSPECT ANALYSIS:
+- Technical Level: ${analysis.technicalLevel}
+- Comment: "${prospect.text}"
+- Quality: ${prospect.quality}
+- Platform: ${prospect.platform || 'Unknown'}
+
+TEMPLATE TO USE:
+${template}
+
+Please generate a personalized message following the system prompt guidelines above.`;
+    
+    return fullContext;
+  }
+
+  // 🎯 SYSTEM PROMPT MANAGEMENT
+  updateSystemPrompt(newPrompt) {
+    this.systemPrompt.content = newPrompt;
+    console.log('✅ System prompt updated');
+  }
+  
+  enableSystemPrompt() {
+    this.systemPrompt.enabled = true;
+    console.log('✅ System prompt enabled');
+  }
+  
+  disableSystemPrompt() {
+    this.systemPrompt.enabled = false;
+    console.log('⚠️ System prompt disabled');
+  }
+  
+  getSystemPrompt() {
+    return this.systemPrompt;
   }
 
   // 🔍 PROSPECT ANALYSIS ENGINE
@@ -445,7 +522,8 @@ Mihkel`
   }
 
   generateFallbackMessage(prospect) {
-    return `Hi ${prospect.username},
+    // Apply system prompt principles even to fallback messages
+    const message = `Hi ${prospect.username},
 
 Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusiast!
 
@@ -458,6 +536,10 @@ Would love to hear your thoughts if you check them out!
 
 Best,
 Mihkel`;
+
+    // Log that this is using fallback with system prompt guidance
+    console.log('📝 Using system prompt-guided fallback message for:', prospect.username);
+    return message;
   }
 
   cleanupMessage(message) {

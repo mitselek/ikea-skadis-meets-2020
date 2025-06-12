@@ -346,6 +346,103 @@ function showStatus(message, type) {
   }
 }
 
+// 🎯 SYSTEM PROMPT CONFIGURATION FUNCTIONS
+window.updateSystemPrompts = function(aiPrompt, standardPrompt) {
+  console.log('🎯 Updating system prompts...');
+  
+  try {
+    if (messagingManager && messagingManager.aiMessaging) {
+      messagingManager.aiMessaging.updateSystemPrompt(aiPrompt);
+      console.log('✅ AI system prompt updated');
+    }
+    
+    if (messagingManager) {
+      messagingManager.updateSystemPrompt(standardPrompt);
+      console.log('✅ Standard system prompt updated');
+    }
+    
+    showStatus('✅ System prompts updated successfully!', 'success');
+    return 'System prompts updated successfully!';
+  } catch (error) {
+    showStatus('❌ Error updating system prompts: ' + error.message, 'error');
+    console.error('❌ Error updating system prompts:', error);
+    return 'Error updating system prompts: ' + error.message;
+  }
+};
+
+window.getSystemPrompts = function() {
+  console.log('🔍 Getting current system prompts...');
+  
+  const prompts = {};
+  
+  try {
+    if (messagingManager && messagingManager.aiMessaging) {
+      prompts.ai = messagingManager.aiMessaging.getSystemPrompt();
+      console.log('✅ AI system prompt retrieved');
+    }
+    
+    if (messagingManager) {
+      prompts.standard = messagingManager.getSystemPrompt();
+      console.log('✅ Standard system prompt retrieved');
+    }
+    
+    console.log('Current system prompts:', prompts);
+    return prompts;
+  } catch (error) {
+    console.error('❌ Error getting system prompts:', error);
+    return { error: error.message };
+  }
+};
+
+window.toggleSystemPrompts = function(enabled) {
+  console.log(`🔄 ${enabled ? 'Enabling' : 'Disabling'} system prompts...`);
+  
+  try {
+    if (messagingManager && messagingManager.aiMessaging) {
+      if (enabled) {
+        messagingManager.aiMessaging.enableSystemPrompt();
+      } else {
+        messagingManager.aiMessaging.disableSystemPrompt();
+      }
+    }
+    
+    if (messagingManager) {
+      if (enabled) {
+        messagingManager.enableSystemPrompt();
+      } else {
+        messagingManager.disableSystemPrompt();
+      }
+    }
+    
+    showStatus(`✅ System prompts ${enabled ? 'enabled' : 'disabled'}!`, 'success');
+    return `System prompts ${enabled ? 'enabled' : 'disabled'}!`;
+  } catch (error) {
+    showStatus('❌ Error toggling system prompts: ' + error.message, 'error');
+    console.error('❌ Error toggling system prompts:', error);
+    return 'Error toggling system prompts: ' + error.message;
+  }
+};
+
+// Make system prompt functions available for testing
+window.testSystemPrompts = function() {
+  console.log('🧪 Testing system prompt functionality...');
+  
+  const currentPrompts = getSystemPrompts();
+  console.log('Current prompts:', currentPrompts);
+  
+  // Test updating prompts
+  const testAIPrompt = 'Test AI prompt: Be concise and technical.';
+  const testStandardPrompt = 'Test standard prompt: Be friendly and helpful.';
+  
+  updateSystemPrompts(testAIPrompt, testStandardPrompt);
+  
+  // Verify update
+  const updatedPrompts = getSystemPrompts();
+  console.log('Updated prompts:', updatedPrompts);
+  
+  return 'System prompt test complete - check console for details';
+};
+
 // 🔍 DEBUG FUNCTIONS - Remove after fixing
 window.debugAI = function() {
   console.log('=== AI SYSTEM DIAGNOSTIC ===');

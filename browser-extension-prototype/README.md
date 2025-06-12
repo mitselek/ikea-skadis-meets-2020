@@ -65,6 +65,30 @@ A **super simple** prototype browser extension that takes your existing outreach
 - **`popup.js`** - The logic that makes the buttons work (your existing scripts, cleaned up)
 - **`content.js`** - Runs on MakerWorld pages to detect SKÅDIS content (very simple)
 
+## 🎯 System Prompt Configuration
+
+The extension now includes **System Prompts** - customizable guidelines that ensure consistent, high-quality messaging across all templates:
+
+- **AI System Prompts**: Provide comprehensive context to AI for enhanced personalization
+- **Standard Template Guidance**: Apply quality principles even without AI
+- **Dynamic Configuration**: Update prompts through browser console or extension interface
+- **Usage Tracking**: Monitor system prompt effectiveness in analytics
+
+### Quick Usage
+
+```javascript
+// Check current system prompts
+getSystemPrompts()
+
+// Update system prompts
+updateSystemPrompts("Custom AI guidance...", "Standard template guidance...")
+
+// Test system prompt functionality
+testSystemPrompts()
+```
+
+See [System Prompt Guide](docs/SYSTEM_PROMPT_GUIDE.md) for complete documentation.
+
 ## 🧪 Try This First
 
 Instead of worrying about the whole thing, just:

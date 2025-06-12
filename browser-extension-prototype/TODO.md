@@ -1,5 +1,6 @@
 # TODO
 
+- Refactor popup.js
 - [ ] SVG -> PNG extension icons
   Icons should generally be in PNG format because PNG has the best support for transparency. However, they can be in any format supported by WebKit, including BMP, GIF, ICO, and JPEG.
   The manifest file should include the icons in the following format:
