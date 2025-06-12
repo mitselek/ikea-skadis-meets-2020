@@ -12,6 +12,37 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('view-campaign').addEventListener('click', viewCampaignDashboard);
   document.getElementById('export-csv').addEventListener('click', exportTrackingData);
   
+  // Dashboard navigation
+  document.getElementById('back-to-main').addEventListener('click', function() {
+    document.getElementById('dashboard-view').classList.remove('active');
+    document.getElementById('main-view').classList.remove('hidden');
+  });
+  
+  // Simulate response for testing (if button exists)
+  const simulateBtn = document.getElementById('simulate-response');
+  if (simulateBtn) {
+    simulateBtn.addEventListener('click', async function() {
+      const result = await chrome.storage.local.get(['outreachLog']);
+      const outreachLog = result.outreachLog || [];
+      
+      if (outreachLog.length > 0) {
+        // Pick a random recent message to simulate response
+        const randomEntry = outreachLog[Math.floor(Math.random() * outreachLog.length)];
+        const responseTypes = ['positive', 'interested', 'neutral', 'not_interested'];
+        const randomResponse = responseTypes[Math.floor(Math.random() * responseTypes.length)];
+        
+        await updateResponseRate(randomEntry.username, randomResponse);
+        
+        // Reload dashboard data
+        await loadDashboardData();
+        
+        showStatus(`✅ Simulated ${randomResponse} response from @${randomEntry.username}`, 'success');
+      } else {
+        showStatus('No messages to simulate responses for yet!', 'error');
+      }
+    });
+  }
+  
   // Load and display initial stats
   updateStatsDisplay();
   
@@ -338,8 +369,8 @@ Mihkel`;
       document.getElementById('prospects-count').textContent = `${uncontactedCount}/${prospects.length}`;
       document.getElementById('messages-sent').textContent = stats.totalMessages;
       
-      // Calculate response rate (placeholder for now)
-      const responseRate = stats.totalMessages > 0 ? '12%' : '0%'; // Would calculate from actual responses
+      // Calculate response rate from actual data
+      const responseRate = stats.responseStats ? `${stats.responseStats.responseRate}%` : '0%';
       document.getElementById('response-rate').textContent = responseRate;
       
     } catch (error) {
@@ -347,68 +378,322 @@ Mihkel`;
     }
   }
 
-  // 📈 CAMPAIGN DASHBOARD
+  // 📈 CAMPAIGN DASHBOARD - Enhanced UI Version
   async function viewCampaignDashboard() {
     try {
-      const result = await chrome.storage.local.get(['campaignStats', 'outreachLog', 'prospects']);
-      const stats = result.campaignStats || {
-        totalMessages: 0,
-        messagesByMonth: {},
-        templateUsage: {},
-        qualityBreakdown: { High: 0, Medium: 0, Low: 0 },
-        sourceProjects: {}
-      };
-      const log = result.outreachLog || [];
-      const prospects = result.prospects || [];
-
-      // 🚫 Calculate duplicate prevention stats
-      const contactedUsernames = new Set(
-        log.map(entry => entry.username.toLowerCase())
-      );
-      const uncontactedCount = prospects.filter(
-        prospect => !contactedUsernames.has(prospect.username.toLowerCase())
-      ).length;
-
-      // Create detailed dashboard report
-      let dashboard = `📈 CAMPAIGN DASHBOARD\\n\\n`;
-      dashboard += `📊 OVERVIEW:\\n`;
-      dashboard += `Total Messages Sent: ${stats.totalMessages}\\n`;
-      dashboard += `Campaign Started: ${log.length > 0 ? log[0].date : 'Not started'}\\n`;
-      dashboard += `Latest Activity: ${log.length > 0 ? log[log.length - 1].date : 'None'}\\n\\n`;
-
-      dashboard += `🚫 DUPLICATE PREVENTION:\\n`;
-      dashboard += `Total Prospects Found: ${prospects.length}\\n`;
-      dashboard += `Already Contacted: ${prospects.length - uncontactedCount}\\n`;
-      dashboard += `Available to Contact: ${uncontactedCount}\\n`;
-      dashboard += `Duplicate Prevention: ${prospects.length - uncontactedCount > 0 ? 'ACTIVE ✅' : 'No duplicates yet'}\\n\\n`;
-
-      dashboard += `🎯 PROSPECT QUALITY:\\n`;
-      dashboard += `High Quality: ${stats.qualityBreakdown.High || 0} messages\\n`;
-      dashboard += `Medium Quality: ${stats.qualityBreakdown.Medium || 0} messages\\n`;
-      dashboard += `Low Quality: ${stats.qualityBreakdown.Low || 0} messages\\n\\n`;
-
-      dashboard += `📝 TEMPLATE USAGE:\\n`;
-      Object.entries(stats.templateUsage).forEach(([template, count]) => {
-        dashboard += `${template}: ${count} times\\n`;
-      });
-
-      dashboard += `\\n🚀 SOURCE PROJECTS:\\n`;
-      Object.entries(stats.sourceProjects).forEach(([project, count]) => {
-        dashboard += `${project}: ${count} prospects\\n`;
-      });
-
-      dashboard += `\\n📅 RECENT ACTIVITY (Last 5):\\n`;
-      const recentMessages = log.slice(-5).reverse();
-      recentMessages.forEach((entry, i) => {
-        dashboard += `${i+1}. @${entry.username} - ${entry.date} (${entry.prospectQuality})\\n`;
-      });
-
-      alert(dashboard);
+      // Switch to dashboard view
+      document.getElementById('main-view').classList.add('hidden');
+      document.getElementById('dashboard-view').classList.add('active');
+      
+      // Load dashboard data
+      await loadDashboardData();
       
     } catch (error) {
-      showStatus('Error loading campaign data: ' + error.message, 'error');
+      showStatus('Error loading campaign dashboard: ' + error.message, 'error');
     }
   }
+
+  // 🤖 AI-POWERED DASHBOARD INSIGHTS
+  async function loadDashboardData() {
+    const result = await chrome.storage.local.get(['campaignStats', 'outreachLog', 'prospects']);
+    const stats = result.campaignStats || {
+      totalMessages: 0,
+      messagesByMonth: {},
+      templateUsage: {},
+      qualityBreakdown: { High: 0, Medium: 0, Low: 0 },
+      sourceProjects: {}
+    };
+    const log = result.outreachLog || [];
+    const prospects = result.prospects || [];
+
+    // Calculate duplicate prevention stats
+    const contactedUsernames = new Set(log.map(entry => entry.username.toLowerCase()));
+    const uncontactedCount = prospects.filter(
+      prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+    ).length;
+
+    // Update performance metrics
+    document.getElementById('total-messages').textContent = stats.totalMessages;
+    const responseRate = stats.responseStats ? `${stats.responseStats.responseRate}%` : '0%';
+    document.getElementById('response-rate-dash').textContent = responseRate;
+    document.getElementById('uncontacted-count').textContent = uncontactedCount;
+    
+    // Calculate campaign days
+    const campaignDays = log.length > 0 ? 
+      Math.ceil((new Date() - new Date(log[0].date)) / (1000 * 60 * 60 * 24)) || 1 : 0;
+    document.getElementById('campaign-days').textContent = campaignDays;
+
+    // Generate AI insights
+    generateAIInsights(stats, log, prospects, uncontactedCount);
+    
+    // Update quality breakdown
+    updateQualityBreakdown(stats.qualityBreakdown);
+    
+    // Update duplicate prevention stats
+    updateDuplicateStats(prospects.length, uncontactedCount);
+    
+    // Update recent activity
+    updateRecentActivity(log.slice(-5).reverse());
+    
+    // Update source projects
+    updateSourceProjects(stats.sourceProjects);
+  }
+
+  // 🤖 AI INSIGHTS GENERATOR
+  function generateAIInsights(stats, log, prospects, uncontactedCount) {
+    const insights = [];
+    
+    // Response rate insights
+    if (stats.responseStats && stats.responseStats.totalResponses > 0) {
+      const responseRate = parseFloat(stats.responseStats.responseRate);
+      const positiveRate = parseFloat(stats.responseStats.positiveRate);
+      
+      if (responseRate > 15) {
+        insights.push({
+          icon: '🔥',
+          text: `Outstanding response rate! ${responseRate}% of prospects are responding - your targeting is excellent!`,
+          type: 'success'
+        });
+      } else if (responseRate > 8) {
+        insights.push({
+          icon: '📈',
+          text: `Good response rate: ${responseRate}%. Industry average is 5-10%, you're doing well!`,
+          type: 'success'
+        });
+      } else if (responseRate > 0) {
+        insights.push({
+          icon: '⚡',
+          text: `Response rate: ${responseRate}%. Consider testing different message templates to improve engagement.`,
+          type: 'improvement'
+        });
+      }
+      
+      if (positiveRate > 60 && stats.responseStats.totalResponses > 3) {
+        insights.push({
+          icon: '🎯',
+          text: `${positiveRate}% positive response rate! Your message resonates well with prospects.`,
+          type: 'success'
+        });
+      }
+    }
+    
+    // Quality insights
+    const totalQuality = stats.qualityBreakdown.High + stats.qualityBreakdown.Medium + stats.qualityBreakdown.Low;
+    if (totalQuality > 0) {
+      const highQualityRate = (stats.qualityBreakdown.High / totalQuality * 100).toFixed(1);
+      if (highQualityRate > 60) {
+        insights.push({
+          icon: '🎯',
+          text: `Excellent targeting! ${highQualityRate}% of your contacts are high-quality prospects.`,
+          type: 'success'
+        });
+      } else if (highQualityRate < 30) {
+        insights.push({
+          icon: '⚡',
+          text: `Focus on quality: Only ${highQualityRate}% high-quality prospects. Look for users with detailed comments.`,
+          type: 'improvement'
+        });
+      }
+    }
+
+    // Activity insights
+    if (log.length > 0) {
+      const recentMessages = log.filter(entry => {
+        const messageDate = new Date(entry.date);
+        const daysSince = (new Date() - messageDate) / (1000 * 60 * 60 * 24);
+        return daysSince <= 7;
+      });
+      
+      if (recentMessages.length > 10) {
+        insights.push({
+          icon: '🚀',
+          text: `Great momentum! You've sent ${recentMessages.length} messages this week. Keep it up!`,
+          type: 'success'
+        });
+      } else if (recentMessages.length === 0 && log.length > 0) {
+        insights.push({
+          icon: '📅',
+          text: 'No activity this week. Consider reaching out to more prospects to maintain engagement.',
+          type: 'reminder'
+        });
+      }
+    }
+
+    // Prospect availability insights
+    if (uncontactedCount > 50) {
+      insights.push({
+        icon: '💎',
+        text: `${uncontactedCount} prospects available! Great opportunity to expand your reach.`,
+        type: 'opportunity'
+      });
+    } else if (uncontactedCount < 10 && uncontactedCount > 0) {
+      insights.push({
+        icon: '⏰',
+        text: `Only ${uncontactedCount} prospects left. Consider extracting comments from other SKÅDIS projects.`,
+        type: 'action'
+      });
+    } else if (uncontactedCount === 0 && prospects.length > 0) {
+      insights.push({
+        icon: '✅',
+        text: 'All prospects contacted! Time to find new SKÅDIS projects to expand your reach.',
+        type: 'complete'
+      });
+    }
+
+    // Template insights
+    const templates = Object.entries(stats.templateUsage);
+    if (templates.length > 1) {
+      const mostUsed = templates.sort(([,a], [,b]) => b - a)[0];
+      insights.push({
+        icon: '📝',
+        text: `"${mostUsed[0]}" is your most effective template (${mostUsed[1]} uses). Consider A/B testing variations.`,
+        type: 'optimization'
+      });
+    }
+
+    // Source project insights
+    const sources = Object.entries(stats.sourceProjects);
+    if (sources.length > 0) {
+      const bestSource = sources.sort(([,a], [,b]) => b - a)[0];
+      insights.push({
+        icon: '🏆',
+        text: `"${bestSource[0]}" generates the most prospects (${bestSource[1]}). Look for similar projects.`,
+        type: 'strategy'
+      });
+    }
+
+    // Render insights
+    const container = document.getElementById('ai-insights-container');
+    container.innerHTML = insights.map(insight => `
+      <div class="ai-insight">
+        <span class="icon">${insight.icon}</span>
+        ${insight.text}
+      </div>
+    `).join('');
+    
+    if (insights.length === 0) {
+      container.innerHTML = `
+        <div class="ai-insight">
+          <span class="icon">🤖</span>
+          Start sending messages to unlock AI-powered campaign insights!
+        </div>
+      `;
+    }
+  }
+
+  function updateQualityBreakdown(breakdown) {
+    const total = breakdown.High + breakdown.Medium + breakdown.Low;
+    const container = document.getElementById('quality-breakdown');
+    
+    if (total === 0) {
+      container.innerHTML = '<p style="opacity: 0.7; font-size: 12px;">No quality data yet - send some messages!</p>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>High Quality</span>
+          <span class="quality-high">${breakdown.High} (${(breakdown.High/total*100).toFixed(1)}%)</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${breakdown.High/total*100}%; background: #4CAF50;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Medium Quality</span>
+          <span class="quality-medium">${breakdown.Medium} (${(breakdown.Medium/total*100).toFixed(1)}%)</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${breakdown.Medium/total*100}%; background: #FF9800;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Low Quality</span>
+          <span class="quality-low">${breakdown.Low} (${(breakdown.Low/total*100).toFixed(1)}%)</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${breakdown.Low/total*100}%; background: #F44336;"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function updateDuplicateStats(totalProspects, uncontacted) {
+    const contacted = totalProspects - uncontacted;
+    const container = document.getElementById('duplicate-stats');
+    
+    container.innerHTML = `
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-value">${totalProspects}</div>
+          <div class="metric-label">Total Found</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" style="color: #F44336;">${contacted}</div>
+          <div class="metric-label">Already Contacted</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding: 8px; background: rgba(76, 175, 80, 0.2); border-radius: 4px; font-size: 12px;">
+        🛡️ Duplicate prevention: ${contacted > 0 ? 'ACTIVE' : 'Ready'} - Never contact the same user twice!
+      </div>
+    `;
+  }
+
+  function updateRecentActivity(recentLog) {
+    const container = document.getElementById('recent-activity');
+    
+    if (recentLog.length === 0) {
+      container.innerHTML = '<p style="opacity: 0.7; font-size: 12px;">No recent activity</p>';
+      return;
+    }
+
+    container.innerHTML = recentLog.map((entry, i) => `
+      <div class="activity-item">
+        <span>@${entry.username}</span>
+        <span class="quality-${entry.prospectQuality.toLowerCase()}">${entry.prospectQuality}</span>
+        <span>${entry.date}</span>
+      </div>
+    `).join('');
+  }
+
+  function updateSourceProjects(projects) {
+    const container = document.getElementById('source-projects');
+    const projectEntries = Object.entries(projects);
+    
+    if (projectEntries.length === 0) {
+      container.innerHTML = '<p style="opacity: 0.7; font-size: 12px;">No source data yet</p>';
+      return;
+    }
+
+    const total = projectEntries.reduce((sum, [,count]) => sum + count, 0);
+    container.innerHTML = projectEntries
+      .sort(([,a], [,b]) => b - a)
+      .map(([project, count]) => `
+        <div style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+            <span style="font-size: 12px;">${project}</span>
+            <span>${count} prospects</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${count/total*100}%;"></div>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  // Navigation handlers
+  document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+    
+    // Dashboard navigation
+    document.getElementById('back-to-main').addEventListener('click', function() {
+      document.getElementById('dashboard-view').classList.remove('active');
+      document.getElementById('main-view').classList.remove('hidden');
+    });
+  });
 
   // 💾 EXPORT TRACKING DATA
   async function exportTrackingData() {
@@ -713,4 +998,56 @@ function extractCommentsFunction() {
   console.log(`Found ${finalProspects.length} prospects with meaningful content!`);
   
   return finalProspects;
+}
+
+// 📈 RESPONSE RATE TRACKING
+async function updateResponseRate(username, responseType) {
+  try {
+    const result = await chrome.storage.local.get(['outreachLog']);
+    const outreachLog = result.outreachLog || [];
+    
+    // Find the log entry for this user
+    const logEntry = outreachLog.find(entry => 
+      entry.username.toLowerCase() === username.toLowerCase()
+    );
+    
+    if (logEntry) {
+      logEntry.responseStatus = responseType;
+      logEntry.responseDate = new Date().toISOString().split('T')[0];
+      logEntry.responseType = responseType;
+      
+      await chrome.storage.local.set({ outreachLog: outreachLog });
+      
+      // Update campaign stats
+      await updateCampaignResponseStats();
+      
+      console.log(`✅ Response tracked: ${username} - ${responseType}`);
+    }
+  } catch (error) {
+    console.error('❌ Error updating response rate:', error);
+  }
+}
+
+async function updateCampaignResponseStats() {
+  const result = await chrome.storage.local.get(['outreachLog', 'campaignStats']);
+  const outreachLog = result.outreachLog || [];
+  const campaignStats = result.campaignStats || {};
+  
+  // Calculate response statistics
+  const totalMessages = outreachLog.length;
+  const responses = outreachLog.filter(entry => 
+    entry.responseStatus && entry.responseStatus !== 'Sent'
+  );
+  const positiveResponses = outreachLog.filter(entry => 
+    entry.responseType === 'positive' || entry.responseType === 'interested'
+  );
+  
+  campaignStats.responseStats = {
+    totalResponses: responses.length,
+    positiveResponses: positiveResponses.length,
+    responseRate: totalMessages > 0 ? (responses.length / totalMessages * 100).toFixed(1) : 0,
+    positiveRate: responses.length > 0 ? (positiveResponses.length / responses.length * 100).toFixed(1) : 0
+  };
+  
+  await chrome.storage.local.set({ campaignStats: campaignStats });
 }

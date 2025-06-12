@@ -88,13 +88,133 @@
       font-size: 11px;
       opacity: 0.8;
     }
+
+    /* Dashboard Styles */
+    .dashboard {
+      display: none;
+      width: 500px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    .main-view {
+      display: block;
+    }
+
+    .main-view.hidden {
+      display: none;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .dashboard-section {
+      background: rgba(255,255,255,0.1);
+      margin-bottom: 15px;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .dashboard-section h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #ffd700;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .progress-bar {
+      background: rgba(255,255,255,0.1);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .ai-insight {
+      background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border-left: 4px solid #ffd700;
+    }
+
+    .ai-insight .icon {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    .recent-activity {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+    }
+
+    .quality-high { color: #4CAF50; }
+    .quality-medium { color: #FF9800; }
+    .quality-low { color: #F44336; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h2>🛠️ SKÅDIS Outreach</h2>
-    <p style="margin: 5px 0; font-size: 12px;">Community engagement made simple</p>
-  </div>
+  <!-- Main View -->
+  <div class="main-view" id="main-view">
+    <div class="header">
+      <h2>🛠️ SKÅDIS Outreach</h2>
+      <p style="margin: 5px 0; font-size: 12px;">Community engagement made simple</p>
+    </div>
 
   <div class="stats">
     <div class="stat-item">
@@ -125,6 +245,83 @@
   <div class="footer">
     <div>SKÅDIS Hook Variants by Mihkel</div>
     <div>🔗 <a href="https://makerworld.com/en/models/1503225-simple-skadis-hook" style="color: #ffd700;">Your Project</a></div>
+  </div>
+  </div>
+
+  <!-- Dashboard View -->
+  <div class="dashboard" id="dashboard-view">
+    <div class="dashboard-header">
+      <h2>📈 Campaign Dashboard</h2>
+      <div class="back-btn" id="back-to-main">← Back</div>
+    </div>
+
+    <!-- AI Insights Section -->
+    <div class="dashboard-section">
+      <h3>🤖 AI Campaign Insights</h3>
+      <div id="ai-insights-container">
+        <!-- AI insights will be populated here -->
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="dashboard-section">
+      <h3>📊 Performance Overview</h3>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-value" id="total-messages">0</div>
+          <div class="metric-label">Messages Sent</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="response-rate-dash">0%</div>
+          <div class="metric-label">Response Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="uncontacted-count">0</div>
+          <div class="metric-label">Uncontacted</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="campaign-days">0</div>
+          <div class="metric-label">Days Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality Breakdown -->
+    <div class="dashboard-section">
+      <h3>🎯 Prospect Quality Distribution</h3>
+      <div id="quality-breakdown">
+        <!-- Quality charts will be populated here -->
+      </div>
+    </div>
+
+    <!-- Duplicate Prevention -->
+    <div class="dashboard-section">
+      <h3>🚫 Duplicate Prevention</h3>
+      <div id="duplicate-stats">
+        <!-- Duplicate prevention stats -->
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dashboard-section">
+      <h3>📅 Recent Activity</h3>
+      <div class="recent-activity" id="recent-activity">
+        <!-- Recent messages will be listed here -->
+      </div>
+      <div style="margin-top: 10px;">
+        <button id="simulate-response" style="padding: 6px 12px; font-size: 11px; background: rgba(76, 175, 80, 0.3);">
+          📈 Simulate Response (Testing)
+        </button>
+      </div>
+    </div>
+
+    <!-- Source Projects -->
+    <div class="dashboard-section">
+      <h3>🚀 Source Projects</h3>
+      <div id="source-projects">
+        <!-- Source project stats -->
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>
