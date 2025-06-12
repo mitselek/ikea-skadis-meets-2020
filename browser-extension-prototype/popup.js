@@ -92,22 +92,50 @@ document.addEventListener('DOMContentLoaded', function() {
   
   async function viewProspects() {
     try {
-      const result = await chrome.storage.local.get(['prospects']);
+      const result = await chrome.storage.local.get(['prospects', 'outreachLog']);
       const prospects = result.prospects || [];
+      const outreachLog = result.outreachLog || [];
       
       if (prospects.length === 0) {
         showStatus('No prospects yet. Try extracting comments from SKÅDIS projects!', 'error');
         return;
       }
       
-      // Simple prospect display (in real version, this would be a nice UI)
-      const topProspects = prospects.slice(0, 5);
-      let message = `Top ${topProspects.length} prospects:\\n\\n`;
+      // 🚫 Get list of already contacted usernames
+      const contactedUsernames = new Set(
+        outreachLog.map(entry => entry.username.toLowerCase())
+      );
       
-      topProspects.forEach((prospect, i) => {
-        message += `${i+1}. @${prospect.username} - ${prospect.quality} quality\\n`;
-        message += `   "${prospect.text.substring(0, 60)}..."\\n\\n`;
-      });
+      // Separate contacted and uncontacted prospects
+      const uncontactedProspects = prospects.filter(
+        prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+      );
+      const contactedProspects = prospects.filter(
+        prospect => contactedUsernames.has(prospect.username.toLowerCase())
+      );
+      
+      // Display prospect breakdown
+      const topUncontacted = uncontactedProspects.slice(0, 3);
+      const topContacted = contactedProspects.slice(0, 2);
+      
+      let message = `📊 PROSPECT OVERVIEW\\n\\n`;
+      message += `🟢 UNCONTACTED: ${uncontactedProspects.length} prospects\\n`;
+      message += `🔴 ALREADY CONTACTED: ${contactedProspects.length} prospects\\n\\n`;
+      
+      if (topUncontacted.length > 0) {
+        message += `🎯 TOP UNCONTACTED PROSPECTS:\\n`;
+        topUncontacted.forEach((prospect, i) => {
+          message += `${i+1}. @${prospect.username} - ${prospect.quality} quality\\n`;
+          message += `   "${prospect.text.substring(0, 50)}..."\\n\\n`;
+        });
+      }
+      
+      if (topContacted.length > 0) {
+        message += `✅ ALREADY CONTACTED:\\n`;
+        topContacted.forEach((prospect, i) => {
+          message += `${i+1}. @${prospect.username} - ${prospect.quality} quality (CONTACTED)\\n`;
+        });
+      }
       
       alert(message);
       
@@ -118,16 +146,32 @@ document.addEventListener('DOMContentLoaded', function() {
   
   async function quickMessage() {
     try {
-      const result = await chrome.storage.local.get(['prospects']);
+      const result = await chrome.storage.local.get(['prospects', 'outreachLog']);
       const prospects = result.prospects || [];
+      const outreachLog = result.outreachLog || [];
       
       if (prospects.length === 0) {
         showStatus('No prospects yet. Extract some comments first!', 'error');
         return;
       }
       
-      // Find the best prospect
-      const bestProspect = prospects.find(p => p.quality === 'High') || prospects[0];
+      // 🚫 DUPLICATE PREVENTION - Get list of already contacted usernames
+      const contactedUsernames = new Set(
+        outreachLog.map(entry => entry.username.toLowerCase())
+      );
+      
+      // Filter out prospects we've already contacted
+      const uncontactedProspects = prospects.filter(
+        prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+      );
+      
+      if (uncontactedProspects.length === 0) {
+        showStatus('⚠️ All prospects have already been contacted! Extract more comments.', 'error');
+        return;
+      }
+      
+      // Find the best uncontacted prospect
+      const bestProspect = uncontactedProspects.find(p => p.quality === 'High') || uncontactedProspects[0];
       
       // Generate a quick message (simplified template)
       const message = generateQuickMessage(bestProspect);
@@ -141,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Refresh stats display to show updated message count
       await updateStatsDisplay();
       
-      showStatus(`✅ Message for @${bestProspect.username} copied & tracked!`, 'success');
+      showStatus(`✅ Message for @${bestProspect.username} copied & tracked! (${uncontactedProspects.length - 1} uncontacted left)`, 'success');
       
     } catch (error) {
       showStatus('Error generating message: ' + error.message, 'error');
@@ -269,11 +313,21 @@ Mihkel`;
   
   async function updateStatsDisplay() {
     try {
-      const result = await chrome.storage.local.get(['prospects', 'campaignStats']);
+      const result = await chrome.storage.local.get(['prospects', 'campaignStats', 'outreachLog']);
       const prospects = result.prospects || [];
       const stats = result.campaignStats || { totalMessages: 0 };
+      const outreachLog = result.outreachLog || [];
       
-      document.getElementById('prospects-count').textContent = prospects.length;
+      // 🚫 Calculate uncontacted prospects
+      const contactedUsernames = new Set(
+        outreachLog.map(entry => entry.username.toLowerCase())
+      );
+      const uncontactedCount = prospects.filter(
+        prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+      ).length;
+      
+      // Update display with uncontacted/total format
+      document.getElementById('prospects-count').textContent = `${uncontactedCount}/${prospects.length}`;
       document.getElementById('messages-sent').textContent = stats.totalMessages;
       
       // Calculate response rate (placeholder for now)
@@ -288,7 +342,7 @@ Mihkel`;
   // 📈 CAMPAIGN DASHBOARD
   async function viewCampaignDashboard() {
     try {
-      const result = await chrome.storage.local.get(['campaignStats', 'outreachLog']);
+      const result = await chrome.storage.local.get(['campaignStats', 'outreachLog', 'prospects']);
       const stats = result.campaignStats || {
         totalMessages: 0,
         messagesByMonth: {},
@@ -297,6 +351,15 @@ Mihkel`;
         sourceProjects: {}
       };
       const log = result.outreachLog || [];
+      const prospects = result.prospects || [];
+
+      // 🚫 Calculate duplicate prevention stats
+      const contactedUsernames = new Set(
+        log.map(entry => entry.username.toLowerCase())
+      );
+      const uncontactedCount = prospects.filter(
+        prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+      ).length;
 
       // Create detailed dashboard report
       let dashboard = `📈 CAMPAIGN DASHBOARD\\n\\n`;
@@ -304,6 +367,12 @@ Mihkel`;
       dashboard += `Total Messages Sent: ${stats.totalMessages}\\n`;
       dashboard += `Campaign Started: ${log.length > 0 ? log[0].date : 'Not started'}\\n`;
       dashboard += `Latest Activity: ${log.length > 0 ? log[log.length - 1].date : 'None'}\\n\\n`;
+
+      dashboard += `🚫 DUPLICATE PREVENTION:\\n`;
+      dashboard += `Total Prospects Found: ${prospects.length}\\n`;
+      dashboard += `Already Contacted: ${prospects.length - uncontactedCount}\\n`;
+      dashboard += `Available to Contact: ${uncontactedCount}\\n`;
+      dashboard += `Duplicate Prevention: ${prospects.length - uncontactedCount > 0 ? 'ACTIVE ✅' : 'No duplicates yet'}\\n\\n`;
 
       dashboard += `🎯 PROSPECT QUALITY:\\n`;
       dashboard += `High Quality: ${stats.qualityBreakdown.High || 0} messages\\n`;
