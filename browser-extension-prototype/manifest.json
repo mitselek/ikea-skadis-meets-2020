@@ -4,12 +4,24 @@
   "version": "0.1",
   "description": "Simple helper for SKÅDIS community outreach",
   "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "icons": {
+    "16": "icon16.svg",
+    "32": "icon32.svg",
+    "48": "icon48.svg",
+    "128": "icon128.svg"
+  },
   "content_scripts": [{
     "matches": ["*://makerworld.com/*"],
     "js": ["content.js"]
   }],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "SKÅDIS Outreach"
+    "default_title": "SKÅDIS Outreach",
+    "default_icon": {
+      "16": "icon16.svg",
+      "32": "icon32.svg",
+      "48": "icon48.svg",
+      "128": "icon128.svg"
+    }
   }
 }

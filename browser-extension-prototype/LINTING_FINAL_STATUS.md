@@ -79,7 +79,7 @@ Text before code block.
 
 ```text
 Code block content
-```
+\```
 
 Text after code block.
 ```
