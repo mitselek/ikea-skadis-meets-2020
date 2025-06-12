@@ -1,4 +1,3 @@
-// filepath: /home/michelek/Documents/ikea-skadis-adapters/browser-extension-prototype/js/extraction.js
 // 🔍 EXTRACTION MODULE LOADER
 // This file acts as a thin loader for the modularized extraction system
 
@@ -37,7 +36,7 @@ script.onerror = function(error) {
       constructor() { }
       
       showStatus(message, type) {
-        console.error('Extraction system error: ' + message);
+        console.error(`Extraction system error: ${message}`);
         const statusEl = document.getElementById('status-message');
         if (statusEl) {
           statusEl.textContent = '⚠️ Module loading error: ' + message;

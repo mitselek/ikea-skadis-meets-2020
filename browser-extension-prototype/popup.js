@@ -1,6 +1,72 @@
 // 🚀 MAIN POPUP SCRIPT - Refactored & Modular
 // Clean initialization with modular components
 
+// Ensure NavigationManager is loaded before PopupManager
+(function ensureAllDependenciesLoaded() {
+  // Make sure document is fully loaded and all elements are rendered
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAfterLoad);
+  } else {
+    // Small delay to ensure scripts have finished loading completely
+    setTimeout(initAfterLoad, 100);
+  }
+  
+  function initAfterLoad() {
+    // Check that all required manager classes are available
+    const requiredClasses = [
+      'NavigationManager', 
+      'MessagePreviewManager', 
+      'AIConfigurationManager'
+    ];
+    
+    const missingClasses = requiredClasses.filter(
+      className => typeof window[className] === 'undefined'
+    );
+    
+    if (missingClasses.length > 0) {
+      console.warn(`⚠️ Missing required classes: ${missingClasses.join(', ')}`);
+      
+      // Load all missing scripts sequentially with proper error handling
+      loadMissingScripts(missingClasses, 0, initializePopupManager);
+    } else {
+      console.log('✅ All required classes available');
+      initializePopupManager();
+    }
+  }
+  
+  function loadMissingScripts(classNames, index, callback) {
+    if (index >= classNames.length) {
+      callback();
+      return;
+    }
+    
+    const className = classNames[index];
+    const scriptSrc = `js/${className.replace(/Manager$/, '').toLowerCase()}-${className.includes('AI') ? 'configuration' : 'preview'}.js`;
+    
+    console.log(`📂 Loading missing script: ${scriptSrc}`);
+    
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+    
+    script.onload = () => {
+      console.log(`✅ Loaded ${scriptSrc} successfully`);
+      loadMissingScripts(classNames, index + 1, callback);
+    };
+    
+    script.onerror = (error) => {
+      console.error(`❌ Failed to load ${scriptSrc}:`, error);
+      loadMissingScripts(classNames, index + 1, callback);
+    };
+    
+    document.head.appendChild(script);
+  }
+})();
+
+function initializePopupManager() {
+  // Create manager immediately instead of waiting for a second DOMContentLoaded event
+  window.popupManager = new PopupManager();
+}
+
 class PopupManager {
   constructor() {
     this.managers = {};
@@ -11,6 +77,16 @@ class PopupManager {
     console.log('🚀 Initializing SKÅDIS Outreach Extension...');
     
     try {
+      // Ensure DOM is fully loaded before proceeding
+      if (document.readyState !== 'complete') {
+        console.log('⏳ Waiting for DOM to fully load...');
+        await new Promise(resolve => {
+          window.addEventListener('load', resolve, { once: true });
+        });
+      }
+      
+      console.log('🏁 DOM fully loaded, initializing managers...');
+      
       // Initialize core managers
       this.managers.prospects = new ProspectsManager();
       this.managers.dashboard = new DashboardManager();
@@ -28,17 +104,109 @@ class PopupManager {
         this.managers.realAI = null;
       }
       
-      // Initialize AI Configuration Manager
-      this.managers.aiConfig = new AIConfigurationManager(this.managers.realAI);
+      // Initialize AI Configuration Manager with better error handling
+      try {
+        // Ensure global window object is used and that AIConfigurationManager exists
+        if (typeof window.AIConfigurationManager === 'function') {
+          this.managers.aiConfig = new window.AIConfigurationManager(this.managers.realAI);
+          console.log('✅ AIConfigurationManager initialized successfully');
+        } else {
+          // Graceful handling for when the class might be available but not defined as expected
+          console.warn('⚠️ AIConfigurationManager not found or not a constructor function');
+          
+          // Check if we need to wait for scripts to fully initialize
+          let retryCount = 0;
+          const maxRetries = 3;
+          
+          while (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            if (typeof window.AIConfigurationManager === 'function') {
+              this.managers.aiConfig = new window.AIConfigurationManager(this.managers.realAI);
+              console.log(`✅ AIConfigurationManager initialized successfully after ${retryCount + 1} retry`);
+              break;
+            }
+            
+            retryCount++;
+            console.log(`⏳ Waiting for AIConfigurationManager to be available (retry ${retryCount}/${maxRetries})`);
+          }
+          
+          // If still not available, create a dummy manager with basic functionality
+          if (retryCount >= maxRetries) {
+            console.warn('⚠️ Could not initialize AIConfigurationManager after retries, using fallback');
+            this.managers.aiConfig = {
+              showAIConfiguration: () => {
+                this.showStatus('AI Configuration not available', 'error');
+              },
+              showStatus: (msg, type) => this.showStatus(msg, type)
+            };
+          }
+        }
+      } catch (configError) {
+        console.warn('⚠️ AIConfigurationManager failed to initialize:', configError);
+        this.managers.aiConfig = {
+          showAIConfiguration: () => {
+            this.showStatus('AI Configuration not available', 'error');
+          },
+          showStatus: (msg, type) => this.showStatus(msg, type)
+        };
+      }
       
-      // Initialize Message Preview Manager
-      this.managers.messagePreview = new MessagePreviewManager(this.managers.messaging);
+      // Initialize Message Preview Manager with better error handling
+      try {
+        // Use the global window object explicitly to access the class
+        if (typeof window.MessagePreviewManager === 'function') {
+          this.managers.messagePreview = new window.MessagePreviewManager(this.managers.messaging);
+          console.log('✅ MessagePreviewManager initialized successfully');
+        } else {
+          console.warn('⚠️ MessagePreviewManager not found or not a constructor function');
+          
+          // Allow time for scripts to initialize fully
+          let retryCount = 0;
+          const maxRetries = 3;
+          
+          while (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            if (typeof window.MessagePreviewManager === 'function') {
+              this.managers.messagePreview = new window.MessagePreviewManager(this.managers.messaging);
+              console.log(`✅ MessagePreviewManager initialized successfully after ${retryCount + 1} retry`);
+              break;
+            }
+            
+            retryCount++;
+            console.log(`⏳ Waiting for MessagePreviewManager to be available (retry ${retryCount}/${maxRetries})`);
+          }
+          
+          // If still not available, create a dummy manager with basic functionality
+          if (retryCount >= maxRetries) {
+            console.warn('⚠️ Could not initialize MessagePreviewManager after retries, using fallback');
+            this.managers.messagePreview = {
+              showMessagePreview: () => {
+                this.showStatus('Message preview functionality is not available', 'error');
+              },
+              showStatus: (msg, type) => this.showStatus(msg, type)
+            };
+          }
+        }
+      } catch (previewError) {
+        console.warn('⚠️ MessagePreviewManager failed to initialize:', previewError);
+        this.managers.messagePreview = {
+          showMessagePreview: () => {
+            this.showStatus('Message preview functionality is not available', 'error');
+          },
+          showStatus: (msg, type) => this.showStatus(msg, type)
+        };
+      }
       
       // Make managers globally accessible for debugging
       window.popupManager = this;
       window.realAIAssistant = this.managers.realAI;
       
       console.log('✅ All modules initialized successfully');
+      
+      // Add a small delay to ensure the DOM has fully processed
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Load initial stats
       this.managers.stats.loadStats();
@@ -56,43 +224,127 @@ class PopupManager {
   }
 
   setupMainEventListeners() {
+    console.log('🔄 Setting up button event listeners...');
+    
+    // Helper function to safely add click listeners to buttons
+    const addButtonListener = (id, handler) => {
+      const button = document.getElementById(id);
+      if (button) {
+        console.log(`📌 Adding listener for ${id}`);
+        // Remove any existing event listeners
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // Add event listener with both click and mousedown for reliability
+        newButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handler.call(this);
+        }, { capture: true });
+        
+        // Add a visual feedback for clicks
+        newButton.addEventListener('mousedown', () => {
+          newButton.style.transform = 'scale(0.95)';
+        });
+        
+        newButton.addEventListener('mouseup', () => {
+          newButton.style.transform = 'scale(1)';
+        });
+        
+        newButton.addEventListener('mouseleave', () => {
+          newButton.style.transform = 'scale(1)';
+        });
+      } else {
+        console.warn(`⚠️ Button '${id}' not found`);
+      }
+    };
+    
     // Main extraction buttons
-    document.getElementById('extract-page')?.addEventListener('click', () => {
-      this.managers.extraction.extractCurrentPage();
+    addButtonListener('extract-page', () => {
+      if (this.managers.extraction) {
+        this.managers.extraction.extractCurrentPage();
+      } else {
+        this.showStatus('Extraction manager not available', 'error');
+      }
     });
     
-    document.getElementById('extract-comments')?.addEventListener('click', () => {
-      this.managers.extraction.extractComments();
+    addButtonListener('auto-load-comments', async () => {
+      if (this.managers.extraction) {
+        try {
+          // Check if we're on a MakerWorld page first
+          const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+          if (!tab.url.includes('makerworld.com')) {
+            this.showStatus('Please navigate to a MakerWorld page first!', 'error');
+            return;
+          }
+          
+          // Provide feedback that process is starting
+          this.showStatus('Starting auto-loading comments, this may take a moment...', 'info');
+          
+          // Call the auto-load comments function
+          await this.managers.extraction.autoLoadComments();
+        } catch (error) {
+          console.error('Error in auto-load comments:', error);
+          this.showStatus('Error auto-loading comments: ' + (error.message || 'Unknown error'), 'error');
+        }
+      } else {
+        this.showStatus('Extraction manager not available', 'error');
+      }
+    });
+    
+    addButtonListener('extract-comments', () => {
+      if (this.managers.extraction) {
+        this.managers.extraction.extractComments();
+      } else {
+        this.showStatus('Extraction manager not available', 'error');
+      }
     });
     
     // Main navigation buttons
-    document.getElementById('view-prospects')?.addEventListener('click', () => {
-      this.managers.prospects.showProspectsView();
+    addButtonListener('view-prospects', () => {
+      if (this.managers.prospects) {
+        this.managers.prospects.showProspectsView();
+      } else {
+        this.showStatus('Prospects manager not available', 'error');
+      }
     });
     
-    document.getElementById('send-template')?.addEventListener('click', () => {
-      this.managers.messagePreview.showMessagePreview();
+    addButtonListener('send-template', () => {
+      if (this.managers.messagePreview) {
+        this.managers.messagePreview.showMessagePreview();
+      } else {
+        this.showStatus('Message preview not available', 'error');
+      }
     });
     
-    document.getElementById('view-campaign')?.addEventListener('click', () => {
-      this.managers.dashboard.showDashboard();
+    addButtonListener('view-campaign', () => {
+      if (this.managers.dashboard) {
+        this.managers.dashboard.showDashboard();
+      } else {
+        this.showStatus('Dashboard not available', 'error');
+      }
     });
     
-    document.getElementById('configure-ai')?.addEventListener('click', () => {
-      this.managers.aiConfig.showAIConfiguration();
+    addButtonListener('configure-ai', () => {
+      if (this.managers.aiConfig && this.managers.aiConfig.showAIConfiguration) {
+        this.managers.aiConfig.showAIConfiguration();
+      } else {
+        this.showStatus('AI configuration not available', 'error');
+      }
     });
     
-    document.getElementById('export-csv')?.addEventListener('click', () => {
-      this.managers.messaging.exportTrackingData();
+    addButtonListener('export-csv', () => {
+      if (this.managers.messaging) {
+        this.managers.messaging.exportTrackingData();
+      } else {
+        this.showStatus('Messaging manager not available', 'error');
+      }
     });
 
     // Testing functionality
-    const simulateBtn = document.getElementById('simulate-response');
-    if (simulateBtn) {
-      simulateBtn.addEventListener('click', async () => {
-        await this.simulateResponse();
-      });
-    }
+    addButtonListener('simulate-response', async () => {
+      await this.simulateResponse();
+    });
   }
 
   async simulateResponse() {
@@ -223,8 +475,3 @@ class PopupManager {
     return this.managers;
   }
 }
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  window.popupManager = new PopupManager();
-});

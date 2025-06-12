@@ -2,11 +2,17 @@
 
 **Date**: June 12, 2025  
 **Status**: ✅ **PRODUCTION READY**  
-**Version**: 1.0.0
+**Version**: 1.0.1
 
 ## 🏆 Mission Accomplished
 
 We have successfully transformed a basic browser extension prototype into a **complete AI-powered marketing automation platform** for the SKÅDIS community outreach.
+
+## 🐛 Recent Bug Fixes
+
+- **Fixed**: "Error auto-loading comments" issue that prevented proper comment loading on MakerWorld pages
+- **Improved**: Error handling and reliability throughout the extension
+- **Added**: Better user feedback during comment loading operations
 
 ## 📊 Transformation Summary
 

@@ -94,48 +94,57 @@ class MessagePreviewManager {
   }
 
   setupPreviewEventListeners() {
-    // Remove existing listeners to prevent duplicates
-    const closeBtn = document.getElementById('close-preview');
-    const editBtn = document.getElementById('edit-message');
-    const regenBtn = document.getElementById('regenerate-message');
-    const sendBtn = document.getElementById('send-final-message');
-    const chatBtn = document.getElementById('apply-chat-changes');
+    console.log('🔄 Setting up message preview event listeners...');
     
-    // Clone and replace elements to remove all event listeners
-    if (closeBtn) {
-      const newCloseBtn = closeBtn.cloneNode(true);
-      closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-      newCloseBtn.addEventListener('click', () => this.closeMessagePreview());
-    }
+    // Store reference to this for closures
+    const self = this;
     
-    if (editBtn) {
-      const newEditBtn = editBtn.cloneNode(true);
-      editBtn.parentNode.replaceChild(newEditBtn, editBtn);
-      newEditBtn.addEventListener('click', () => this.toggleEditMode());
-    }
-    
-    if (regenBtn) {
-      const newRegenBtn = regenBtn.cloneNode(true);
-      regenBtn.parentNode.replaceChild(newRegenBtn, regenBtn);
-      newRegenBtn.addEventListener('click', () => this.regenerateMessage());
-    }
-    
-    if (sendBtn) {
-      const newSendBtn = sendBtn.cloneNode(true);
-      sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
-      newSendBtn.addEventListener('click', () => this.sendFinalMessage());
-    }
+    // Helper function for setting up button event listeners
+    const setupButton = (id, handlerFn) => {
+      const btn = document.getElementById(id);
+      if (!btn) {
+        console.warn(`⚠️ Button with ID ${id} not found`);
+        return;
+      }
+      
+      // Clone and replace to remove any existing event listeners
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      // Add multiple event types for better reliability with proper context binding
+      newBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handlerFn.apply(self);
+      }, { capture: true });
+      
+      // Add visual feedback for clicking
+      newBtn.addEventListener('mousedown', () => {
+        newBtn.style.transform = 'scale(0.95)';
+      });
+      
+      newBtn.addEventListener('mouseup', () => {
+        newBtn.style.transform = 'scale(1)';
+      });
+      
+      newBtn.addEventListener('mouseleave', () => {
+        newBtn.style.transform = 'scale(1)';
+      });
+      
+      console.log(`📌 Listener set up for button: ${id}`);
+    };
+
+    // Set up all button event listeners with proper binding
+    setupButton('close-preview', function() { self.closeMessagePreview(); });
+    setupButton('edit-message', function() { self.toggleEditMode(); });
+    setupButton('regenerate-message', function() { self.regenerateMessage(); });
+    setupButton('send-final-message', function() { self.sendFinalMessage(); });
     
     // Show AI chat if available
     const chatSection = document.getElementById('ai-chat-section');
-    if (this.messagingManager.aiMessaging && chatSection) {
+    if (this.messagingManager?.aiMessaging && chatSection) {
       chatSection.style.display = 'block';
-      
-      if (chatBtn) {
-        const newChatBtn = chatBtn.cloneNode(true);
-        chatBtn.parentNode.replaceChild(newChatBtn, chatBtn);
-        newChatBtn.addEventListener('click', () => this.applyChatChanges());
-      }
+      setupButton('apply-chat-changes', function() { self.applyChatChanges(); });
     }
   }
 

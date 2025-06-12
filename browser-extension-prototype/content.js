@@ -4,6 +4,9 @@ console.log('🛠️ SKÅDIS Outreach Helper loaded!');
 // Add a subtle indicator when on relevant pages
 if (window.location.hostname === 'makerworld.com') {
   checkPageRelevance();
+  
+  // Set a flag that can be used by injected scripts to know they're on the right page
+  window.__skadisOutreachExtensionActive = true;
 }
 
 function checkPageRelevance() {

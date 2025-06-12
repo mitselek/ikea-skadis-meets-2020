@@ -46,6 +46,7 @@
       gap: 10px;
     }
     
+    /* Fix for button click issues */
     button {
       padding: 12px;
       border: none;
@@ -54,11 +55,19 @@
       color: white;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
+      transition: background 0.3s, transform 0.15s;
+      position: relative;
+      z-index: 2;  /* Ensure buttons are above other elements */
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3); /* Mobile tap highlight */
+      touch-action: manipulation; /* Improve touch behavior */
     }
     
     button:hover {
       background: rgba(255,255,255,0.3);
+    }
+    
+    button:active {
+      transform: scale(0.95);
     }
     
     button:disabled {
@@ -748,6 +757,7 @@
 
   <div class="actions">
     <button id="extract-page" title="Analyze current MakerWorld page for SKÅDIS relevance and engagement">📊 Analyze This Page</button>
+    <button id="auto-load-comments" title="Automatically load all comments on the page without manual scrolling">🔄 Auto-Load All Comments</button>
     <button id="extract-comments" title="Extract quality prospects from comments on this page">💬 Extract Comments</button>
     <button id="view-prospects" title="View and manage all extracted prospects">👥 View Prospects</button>
     <button id="send-template" title="Send message to next best uncontacted prospect">📧 Send Template Message</button>
@@ -973,14 +983,22 @@
     </div>
   </div>
 
-  <!-- Load modular JavaScript files -->
+  <!-- Load modular JavaScript files in dependency order -->
+  <!-- Core dependencies first -->
+  <script src="js/navigation.js"></script>
   <script src="js/real-ai-assistant.js"></script>
+  <script src="js/ai-configuration.js"></script>
   <script src="js/ai-messaging.js"></script>
+  
+  <!-- Feature modules -->
   <script src="js/prospects.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/messaging.js"></script>
   <script src="js/extraction.js"></script>
   <script src="js/stats.js"></script>
+  <script src="js/message-preview.js"></script>
+  
+  <!-- Initialize main app last -->
   <script src="popup.js"></script>
 </body>
 </html>
