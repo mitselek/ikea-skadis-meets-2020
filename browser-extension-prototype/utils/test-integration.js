@@ -198,6 +198,7 @@ function quickTestSuite() {
     console.log('🚀 QUICK TEST SUITE FUNCTIONS:');
     console.log('');
     console.log('🎯 runFinalIntegrationTest() - Complete end-to-end test');
+    console.log('📝 runTemplateMessagingTest() - Template system test');
     console.log('🔧 configureOpenAIKey() - Set up API key');
     console.log('🧪 testOpenAIConnection() - Test API connection');
     console.log('🔍 quickConfigGuide() - Show setup guide');
@@ -205,11 +206,15 @@ function quickTestSuite() {
     console.log('📋 Recommended order:');
     console.log('1. configureOpenAIKey()');
     console.log('2. runFinalIntegrationTest()');
+    console.log('3. runTemplateMessagingTest() - Test fallback system');
+    console.log('');
+    console.log('💡 Load template test: eval(await fetch("./utils/test-template-messaging.js").then(r => r.text()))');
 }
 
 // Auto-run guide
 console.log('🎯 Final AI Integration Test Loaded');
 console.log('');
 console.log('🚀 Ready to test! Run: runFinalIntegrationTest()');
+console.log('📝 For template testing: Load test-template-messaging.js');
 console.log('');
 quickTestSuite();
