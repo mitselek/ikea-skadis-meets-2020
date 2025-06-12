@@ -606,6 +606,121 @@
       display: flex;
       gap: 10px;
     }
+
+    /* Message Preview Section Styles */
+    .message-preview {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .preview-header h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #ffd700;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .prospect-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 12px;
+    }
+
+    .message-content label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .message-content textarea {
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      box-sizing: border-box;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .message-actions button {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px;
+      font-size: 11px;
+    }
+
+    .edit-btn {
+      background: #4CAF50;
+    }
+
+    .regen-btn {
+      background: #FF9800;
+    }
+
+    .send-btn {
+      background: #2196F3;
+    }
+
+    .ai-chat label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .ai-chat textarea {
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    .chat-btn {
+      background: #9C27B0;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -647,6 +762,36 @@
     <div>SKÅDIS Hook Variants by Mihkel</div>
     <div>🔗 <a href="https://makerworld.com/en/models/1503225-simple-skadis-hook" style="color: #ffd700;">Your Project</a></div>
   </div>
+  </div>
+
+  <!-- Message Preview Section (Outside main-view) -->
+  <div id="message-preview-section" class="message-preview" style="display: none;">
+    <div class="preview-header">
+      <h3>📧 Message Preview</h3>
+      <button id="close-preview" class="close-btn">✕</button>
+    </div>
+    
+    <div class="prospect-info">
+      <div id="preview-prospect-name"></div>
+      <div id="preview-prospect-platform"></div>
+    </div>
+    
+    <div class="message-content">
+      <label>Generated Message:</label>
+      <textarea id="preview-message" rows="8" readonly></textarea>
+    </div>
+    
+    <div class="message-actions">
+      <button id="edit-message" class="edit-btn">✏️ Edit Message</button>
+      <button id="regenerate-message" class="regen-btn">🔄 Regenerate</button>
+      <button id="send-final-message" class="send-btn">📧 Send This Message</button>
+    </div>
+    
+    <div class="ai-chat" id="ai-chat-section" style="display: none;">
+      <label>Chat with AI to adjust message:</label>
+      <textarea id="chat-input" rows="2" placeholder="E.g., 'Make it more casual' or 'Add mention of their project'"></textarea>
+      <button id="apply-chat-changes" class="chat-btn">💬 Apply Changes</button>
+    </div>
   </div>
 
   <!-- AI Configuration Section (Outside main-view) -->

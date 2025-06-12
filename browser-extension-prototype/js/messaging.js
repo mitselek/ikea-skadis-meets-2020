@@ -51,8 +51,18 @@ class MessagingManager {
       // Generate a quick message and get template info
       const messageResult = await this.generateQuickMessageWithTemplate(bestProspect);
       
+      // Ensure we have a valid message string
+      let finalMessage;
+      if (messageResult && typeof messageResult === 'object' && messageResult.message) {
+        finalMessage = messageResult.message;
+      } else if (typeof messageResult === 'string') {
+        finalMessage = messageResult;
+      } else {
+        throw new Error('No valid message generated');
+      }
+      
       // Copy to clipboard
-      await navigator.clipboard.writeText(messageResult.message);
+      await navigator.clipboard.writeText(finalMessage);
       
       // 🚀 AUTOMATIC MESSAGE TRACKING - Log this outreach with correct template!
       await this.logOutreachMessage(bestProspect, messageResult.message, messageResult.templateUsed);
@@ -82,14 +92,37 @@ class MessagingManager {
     if (this.aiMessaging) {
       try {
         const aiResult = await this.aiMessaging.generatePersonalizedMessage(prospect);
-        console.log(`✨ AI Generated ${aiResult.templateUsed} for @${prospect.username}`);
+        
+        // Debug: Log the actual AI result structure
+        console.log('🔍 AI Result structure:', aiResult);
+        console.log('🔍 AI Result type:', typeof aiResult);
+        console.log('🔍 AI Result message:', aiResult?.message);
+        console.log('🔍 AI Result templateUsed:', aiResult?.templateUsed);
+        
+        // Handle both string and object returns from AI
+        let message, templateUsed;
+        
+        if (typeof aiResult === 'string') {
+          // AI returned message directly as string
+          message = aiResult;
+          templateUsed = 'AI Generated';
+          console.log(`✨ AI Generated direct string message for @${prospect.username}`);
+        } else if (aiResult && typeof aiResult === 'object' && aiResult.message) {
+          // AI returned object with message property
+          message = aiResult.message;
+          templateUsed = aiResult.templateUsed || 'AI Generated';
+          console.log(`✨ AI Generated object message for @${prospect.username}`);
+        } else {
+          console.error('❌ AI result invalid format:', aiResult);
+          throw new Error('AI generated invalid result format');
+        }
         
         // Store AI analytics for dashboard
-        this.storeAIAnalytics(prospect, aiResult);
+        this.storeAIAnalytics(prospect, { message, templateUsed });
         
         return {
-          message: aiResult.message,
-          templateUsed: aiResult.templateUsed
+          message: message,
+          templateUsed: templateUsed
         };
       } catch (error) {
         console.error('❌ AI message generation failed, using fallback:', error);
@@ -135,10 +168,10 @@ Mihkel`;
         prospect: {
           username: prospect.username,
           quality: prospect.quality,
-          commentLength: prospect.text.length
+          commentLength: (prospect.text || prospect.comment || 'No comment available').length
         },
         ai: {
-          templateUsed: aiResult.templateUsed,
+          templateUsed: aiResult.templateUsed || 'AI Generated',
           confidence: aiResult.confidence,
           personalizationCount: Object.keys(aiResult.personalizations || {}).length
         },
@@ -192,7 +225,7 @@ Mihkel`;
         responseStatus: 'Sent',
         responseDate: null,
         responseType: null,
-        notes: `Auto-tracked from extension. Original comment: "${prospect.text.substring(0, 50)}..."`
+        notes: `Auto-tracked from extension. Original comment: "${(prospect.text || prospect.comment || 'No comment available').substring(0, 50)}..."`
       };
 
       // Add to log
@@ -230,6 +263,7 @@ Mihkel`;
   }
 
   extractProjectName(url) {
+    if (!url) return 'Unknown Project';
     const match = url.match(/models\/\d+-([^#?]+)/);
     return match ? match[1].replace(/-/g, ' ') : 'Unknown Project';
   }

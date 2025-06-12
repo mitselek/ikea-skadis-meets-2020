@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   document.getElementById('send-template').addEventListener('click', () => {
-    messagingManager.quickMessage();
+    showMessagePreview();
   });
   
   document.getElementById('view-campaign').addEventListener('click', () => {
@@ -497,6 +497,250 @@ window.testAISystem = function() {
   
   return 'AI System test complete - check console for results!';
 };
+
+// 📧 MESSAGE PREVIEW SYSTEM
+let currentMessageData = null;
+
+async function showMessagePreview() {
+  try {
+    // Get prospects and check for uncontacted ones
+    const result = await chrome.storage.local.get(['prospects', 'outreachLog']);
+    const prospects = result.prospects || [];
+    const outreachLog = result.outreachLog || [];
+    
+    if (prospects.length === 0) {
+      showStatus('No prospects yet. Extract some comments first!', 'error');
+      return;
+    }
+    
+    // Filter out already contacted prospects
+    const contactedUsernames = new Set(
+      outreachLog.map(entry => entry.username.toLowerCase())
+    );
+    
+    const uncontactedProspects = prospects.filter(
+      prospect => !contactedUsernames.has(prospect.username.toLowerCase())
+    );
+    
+    if (uncontactedProspects.length === 0) {
+      showStatus('⚠️ All prospects have already been contacted! Extract more comments.', 'error');
+      return;
+    }
+    
+    // Find the best uncontacted prospect
+    const bestProspect = uncontactedProspects.find(p => p.quality === 'High') || uncontactedProspects[0];
+    
+    // Generate message
+    const messageResult = await messagingManager.generateQuickMessageWithTemplate(bestProspect);
+    
+    // Ensure we have a valid message string
+    let finalMessage;
+    if (messageResult && typeof messageResult === 'object' && messageResult.message) {
+      finalMessage = messageResult.message;
+    } else if (typeof messageResult === 'string') {
+      finalMessage = messageResult;
+    } else {
+      throw new Error('No valid message generated');
+    }
+    
+    // Store current message data for later use
+    currentMessageData = {
+      prospect: bestProspect,
+      message: finalMessage,
+      templateUsed: messageResult.templateUsed || 'Standard Template',
+      uncontactedCount: uncontactedProspects.length
+    };
+    
+    // Show preview
+    displayMessagePreview(currentMessageData);
+    
+  } catch (error) {
+    showStatus('Error generating message preview: ' + error.message, 'error');
+    console.error('Message preview error:', error);
+  }
+}
+
+function displayMessagePreview(data) {
+  // Hide main view and show preview
+  document.getElementById('main-view').style.display = 'none';
+  document.getElementById('message-preview-section').style.display = 'block';
+  
+  // Populate preview data
+  document.getElementById('preview-prospect-name').textContent = `👤 @${data.prospect.username}`;
+  document.getElementById('preview-prospect-platform').textContent = `📱 ${data.prospect.platform || 'Unknown'} • Quality: ${data.prospect.quality}`;
+  document.getElementById('preview-message').value = data.message;
+  
+  // Add event listeners for preview actions
+  setupPreviewEventListeners();
+}
+
+function setupPreviewEventListeners() {
+  // Remove existing listeners to prevent duplicates
+  const closeBtn = document.getElementById('close-preview');
+  const editBtn = document.getElementById('edit-message');
+  const regenBtn = document.getElementById('regenerate-message');
+  const sendBtn = document.getElementById('send-final-message');
+  const chatBtn = document.getElementById('apply-chat-changes');
+  
+  // Clone and replace elements to remove all event listeners
+  if (closeBtn) {
+    const newCloseBtn = closeBtn.cloneNode(true);
+    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+    newCloseBtn.addEventListener('click', () => closeMessagePreview());
+  }
+  
+  if (editBtn) {
+    const newEditBtn = editBtn.cloneNode(true);
+    editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+    newEditBtn.addEventListener('click', () => toggleEditMode());
+  }
+  
+  if (regenBtn) {
+    const newRegenBtn = regenBtn.cloneNode(true);
+    regenBtn.parentNode.replaceChild(newRegenBtn, regenBtn);
+    newRegenBtn.addEventListener('click', () => regenerateMessage());
+  }
+  
+  if (sendBtn) {
+    const newSendBtn = sendBtn.cloneNode(true);
+    sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
+    newSendBtn.addEventListener('click', () => sendFinalMessage());
+  }
+  
+  // Show AI chat if available
+  const chatSection = document.getElementById('ai-chat-section');
+  if (messagingManager.aiMessaging && chatSection) {
+    chatSection.style.display = 'block';
+    
+    if (chatBtn) {
+      const newChatBtn = chatBtn.cloneNode(true);
+      chatBtn.parentNode.replaceChild(newChatBtn, chatBtn);
+      newChatBtn.addEventListener('click', () => applyChatChanges());
+    }
+  }
+}
+
+function toggleEditMode() {
+  const textarea = document.getElementById('preview-message');
+  const editBtn = document.getElementById('edit-message');
+  
+  if (textarea.readOnly) {
+    textarea.readOnly = false;
+    textarea.focus();
+    editBtn.textContent = '💾 Save Changes';
+  } else {
+    saveMessageChanges();
+  }
+}
+
+function saveMessageChanges() {
+  const textarea = document.getElementById('preview-message');
+  const editBtn = document.getElementById('edit-message');
+  
+  currentMessageData.message = textarea.value;
+  textarea.readOnly = true;
+  editBtn.textContent = '✏️ Edit Message';
+  
+  showStatus('✅ Message changes saved!', 'success');
+}
+
+async function regenerateMessage() {
+  try {
+    showStatus('🔄 Regenerating message...', 'success');
+    
+    const messageResult = await messagingManager.generateQuickMessageWithTemplate(currentMessageData.prospect);
+    
+    let finalMessage;
+    if (messageResult && typeof messageResult === 'object' && messageResult.message) {
+      finalMessage = messageResult.message;
+    } else if (typeof messageResult === 'string') {
+      finalMessage = messageResult;
+    } else {
+      throw new Error('No valid message generated');
+    }
+    
+    currentMessageData.message = finalMessage;
+    currentMessageData.templateUsed = messageResult.templateUsed || 'Standard Template';
+    
+    document.getElementById('preview-message').value = finalMessage;
+    showStatus('✅ Message regenerated!', 'success');
+    
+  } catch (error) {
+    showStatus('Error regenerating message: ' + error.message, 'error');
+  }
+}
+
+async function applyChatChanges() {
+  const chatInput = document.getElementById('chat-input').value.trim();
+  if (!chatInput) {
+    showStatus('Please enter your adjustment request', 'error');
+    return;
+  }
+  
+  try {
+    showStatus('🤖 AI is adjusting the message...', 'success');
+    
+    // For now, let's just regenerate with a note
+    // TODO: Implement actual AI message adjustment
+    showStatus('🔄 Feature coming soon - regenerating message instead...', 'success');
+    await regenerateMessage();
+    document.getElementById('chat-input').value = '';
+    
+  } catch (error) {
+    showStatus('Error adjusting message: ' + error.message, 'error');
+  }
+}
+
+async function sendFinalMessage() {
+  try {
+    showStatus('📤 Sending message...', 'success');
+    
+    // Debug logging
+    console.log('🔍 Current message data:', currentMessageData);
+    console.log('🔍 MessagingManager available:', !!messagingManager);
+    console.log('🔍 logOutreachMessage available:', !!messagingManager?.logOutreachMessage);
+    
+    // Copy to clipboard
+    await navigator.clipboard.writeText(currentMessageData.message);
+    
+    // Log the outreach
+    await messagingManager.logOutreachMessage(
+      currentMessageData.prospect, 
+      currentMessageData.message, 
+      currentMessageData.templateUsed
+    );
+    
+    console.log('✅ Outreach logged successfully');
+    
+    // Open profile in new tab
+    try {
+      const profileUrl = currentMessageData.prospect.profileLink;
+      await chrome.tabs.create({ url: profileUrl, active: true });
+      showStatus(`✅ Message copied & profile opened! @${currentMessageData.prospect.username} (${currentMessageData.uncontactedCount - 1} uncontacted left)`, 'success');
+    } catch (tabError) {
+      console.error('Error opening profile tab:', tabError);
+      showStatus(`✅ Message copied & tracked! @${currentMessageData.prospect.username} (Profile: ${currentMessageData.prospect.profileLink})`, 'success');
+    }
+    
+    // Close preview and return to main view
+    setTimeout(() => {
+      closeMessagePreview();
+      // Refresh stats
+      if (window.updateStatsDisplay) {
+        window.updateStatsDisplay();
+      }
+    }, 2000);
+    
+  } catch (error) {
+    showStatus('Error sending message: ' + error.message, 'error');
+  }
+}
+
+function closeMessagePreview() {
+  document.getElementById('message-preview-section').style.display = 'none';
+  document.getElementById('main-view').style.display = 'block';
+  currentMessageData = null;
+}
 
 // 🔧 QUICK AI SETUP TEST
 window.quickAITest = function() {
