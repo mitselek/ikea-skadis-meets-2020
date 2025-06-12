@@ -1,6 +1,7 @@
 // 🤖 AI-POWERED MESSAGE COMPOSITION MODULE
 // Generates personalized promotional messages based on prospect data
 
+// Refactored: Use MessagePersonalizer for analysis and personalization
 class AIMessagingManager {
   constructor() {
     // Initialize Real AI Assistant with error handling
@@ -139,13 +140,21 @@ Mihkel`
   // 🧠 AI-POWERED MESSAGE GENERATION (Enhanced with Real AI)
   async generatePersonalizedMessage(prospect) {
     try {
-      // First, generate template-based message as fallback
-      const analysis = this.analyzeProspect(prospect);
-      const template = this.selectOptimalTemplate(analysis);
-      const personalizations = this.generatePersonalizations(prospect, analysis);
-      
+      // Use MessagePersonalizer for analysis and personalization
+      const analysis = window.MessagePersonalizer.analyzeProspect(prospect);
+      // Use TemplateManager for template selection
+      if (!this.templateManager) {
+        this.templateManager = new window.TemplateManager();
+        // Load templates from old messageTemplates for now
+        this.templateManager.setTemplate('technical', this.messageTemplates.technical.template);
+        this.templateManager.setTemplate('problem_solver', this.messageTemplates.problem_solver.template);
+        this.templateManager.setTemplate('community', this.messageTemplates.community.template);
+        this.templateManager.setTemplate('brief', this.messageTemplates.brief.template);
+      }
+      const templateStr = this.templateManager.selectTemplate(analysis);
+      const personalizations = window.MessagePersonalizer.generatePersonalizations(prospect, analysis, this.benefitLibrary);
       // Generate template message with system prompt
-      let templateMessage = this.applySystemPrompt(template.template);
+      let templateMessage = this.applySystemPrompt(templateStr);
       Object.entries(personalizations).forEach(([key, value]) => {
         const placeholder = `{${key}}`;
         templateMessage = templateMessage.replace(new RegExp(placeholder, 'g'), value);
@@ -255,66 +264,7 @@ Please generate a personalized message following the system prompt guidelines ab
   }
 
   // 🔍 PROSPECT ANALYSIS ENGINE
-  analyzeProspect(prospect) {
-    const analysis = {
-      technicalLevel: 'medium',
-      problemAreas: [],
-      interests: [],
-      engagementStyle: 'standard',
-      commentLength: prospect.text.length,
-      quality: prospect.quality,
-      confidence: 0.7
-    };
-
-    const commentText = prospect.text.toLowerCase();
-    
-    // Analyze technical level
-    const technicalWords = ['print', 'settings', 'layer', 'infill', 'support', 'tolerance', 'precision', 'dimension'];
-    const techScore = technicalWords.filter(word => commentText.includes(word)).length;
-    
-    if (techScore >= 3) analysis.technicalLevel = 'high';
-    else if (techScore >= 1) analysis.technicalLevel = 'medium';
-    else analysis.technicalLevel = 'low';
-
-    // Identify problem areas
-    if (commentText.includes('wobbl') || commentText.includes('loose') || commentText.includes('stable')) {
-      analysis.problemAreas.push('stability');
-    }
-    if (commentText.includes('organiz') || commentText.includes('storage')) {
-      analysis.problemAreas.push('organization');
-    }
-    if (commentText.includes('cable') || commentText.includes('wire')) {
-      analysis.problemAreas.push('cable_management');
-    }
-    if (commentText.includes('tool')) {
-      analysis.problemAreas.push('tool_storage');
-    }
-
-    // Identify interests
-    if (commentText.includes('hook') || commentText.includes('mount')) {
-      analysis.interests.push('mounting_solutions');
-    }
-    if (commentText.includes('workshop') || commentText.includes('garage')) {
-      analysis.interests.push('workshop_organization');
-    }
-    if (commentText.includes('diy') || commentText.includes('maker')) {
-      analysis.interests.push('diy_projects');
-    }
-
-    // Determine engagement style
-    if (prospect.text.length > 100) {
-      analysis.engagementStyle = 'detailed';
-      analysis.confidence += 0.1;
-    } else if (prospect.text.length < 30) {
-      analysis.engagementStyle = 'brief';
-    }
-
-    // Quality-based confidence adjustment
-    if (prospect.quality === 'High') analysis.confidence += 0.2;
-    else if (prospect.quality === 'Low') analysis.confidence -= 0.1;
-
-    return analysis;
-  }
+  // Removed: Now in MessagePersonalizer
 
   // 🎯 TEMPLATE SELECTION AI
   selectOptimalTemplate(analysis) {
@@ -343,215 +293,13 @@ Please generate a personalized message following the system prompt guidelines ab
   }
 
   // ✨ PERSONALIZATION GENERATOR
-  generatePersonalizations(prospect, analysis) {
-    const personalizations = {
-      name: prospect.username,
-      project: this.extractProjectName(prospect.source),
-      comment_reference: this.generateCommentReference(prospect, analysis),
-      comment_insight: this.generateCommentInsight(prospect, analysis),
-      technical_details: this.generateTechnicalDetails(analysis),
-      personalized_benefits: this.generatePersonalizedBenefits(analysis),
-      problem_solution: this.generateProblemSolution(analysis),
-      specific_benefits: this.generateSpecificBenefits(analysis),
-      call_to_action: this.generateCallToAction(analysis),
-      personalized_question: this.generatePersonalizedQuestion(prospect, analysis),
-      engagement_type: this.generateEngagementType(prospect, analysis),
-      community_connection: this.generateCommunityConnection(analysis),
-      project_highlights: this.generateProjectHighlights(analysis),
-      collaboration_invite: this.generateCollaborationInvite(analysis),
-      key_benefit: this.generateKeyBenefit(analysis),
-      simple_question: this.generateSimpleQuestion(prospect, analysis)
-    };
-
-    return personalizations;
-  }
+  // Removed: Now in MessagePersonalizer
 
   // 🎨 PERSONALIZATION COMPONENTS
-  generateCommentReference(prospect, analysis) {
-    if (analysis.technicalLevel === 'high') {
-      return `detailed technical comment`;
-    } else if (prospect.text.length > 50) {
-      return `thoughtful comment`;
-    } else {
-      return `comment`;
-    }
-  }
-
-  generateCommentInsight(prospect, analysis) {
-    const commentText = prospect.text.toLowerCase();
-    
-    if (commentText.includes('perfect') || commentText.includes('great')) {
-      return "sounds like you've had good experiences with SKÅDIS";
-    } else if (analysis.problemAreas.length > 0) {
-      return "I can relate to those challenges";
-    } else {
-      return "great to meet another SKÅDIS enthusiast";
-    }
-  }
-
-  generateTechnicalDetails(analysis) {
-    if (analysis.technicalLevel === 'high') {
-      return `🔧 **Two-slot mounting system** (40mm spacing) for superior stability
-🔧 **Four variants**: U, U-o, H, H-o hooks for different applications
-🔧 **Precision tolerances** optimized for standard FDM printers
-🔧 **Material tested** with PLA, PETG, and ABS filaments`;
-    } else {
-      return `The design uses a smart two-slot mounting system that makes the hooks much more stable than standard single-slot designs.`;
-    }
-  }
-
-  generatePersonalizedBenefits(analysis) {
-    const benefits = [];
-    
-    if (analysis.problemAreas.includes('stability')) {
-      benefits.push(...this.benefitLibrary.stability);
-    }
-    if (analysis.problemAreas.includes('cable_management')) {
-      benefits.push(...this.benefitLibrary.cable_management);
-    }
-    if (analysis.technicalLevel === 'high') {
-      benefits.push(...this.benefitLibrary.documentation);
-    }
-    if (benefits.length === 0) {
-      benefits.push(...this.benefitLibrary.variety);
-    }
-
-    return benefits.slice(0, 3).map(benefit => `• ${benefit}`).join('\n');
-  }
-
-  generateProblemSolution(analysis) {
-    if (analysis.problemAreas.includes('stability')) {
-      return "My two-slot mounting system completely eliminates the wobble and rotation issues you get with single-slot hooks.";
-    } else if (analysis.problemAreas.includes('organization')) {
-      return "I've created four different hook variants that can handle various organization challenges.";
-    } else {
-      return "I've designed some enhanced SKÅDIS hooks that solve common stability and organization issues.";
-    }
-  }
-
-  generateSpecificBenefits(analysis) {
-    const benefits = this.generatePersonalizedBenefits(analysis);
-    return benefits;
-  }
-
-  generateCallToAction(analysis) {
-    if (analysis.technicalLevel === 'high') {
-      return "Would love to get your technical feedback on the design!";
-    } else {
-      return "Would love to hear your thoughts if you check them out!";
-    }
-  }
-
-  generatePersonalizedQuestion(prospect, analysis) {
-    const commentText = prospect.text.toLowerCase();
-    
-    if (analysis.problemAreas.includes('stability')) {
-      return "Curious if you've had similar stability issues with standard hooks?";
-    } else if (commentText.includes('print')) {
-      return "Have you tried printing any custom SKÅDIS accessories yourself?";
-    } else {
-      return "What's been your biggest challenge with SKÅDIS organization?";
-    }
-  }
-
-  generateEngagementType(prospect, analysis) {
-    if (prospect.text.length > 100) {
-      return "detailed feedback";
-    } else if (analysis.technicalLevel === 'high') {
-      return "technical insights";
-    } else {
-      return "comment";
-    }
-  }
-
-  generateCommunityConnection(analysis) {
-    if (analysis.interests.includes('workshop_organization')) {
-      return "As someone who's constantly trying to optimize workshop organization, I think you'll appreciate these designs.";
-    } else if (analysis.technicalLevel === 'high') {
-      return "Since you seem to have a good eye for technical details, I'd love your perspective on these designs.";
-    } else {
-      return "I think you'll find these hook designs quite useful for your SKÅDIS setup.";
-    }
-  }
-
-  generateProjectHighlights(analysis) {
-    const highlights = [];
-    
-    if (analysis.technicalLevel === 'high') {
-      highlights.push("Complete technical documentation with assembly photos");
-    }
-    highlights.push("Four different hook variants for various applications");
-    highlights.push("Two-slot mounting system for superior stability");
-    
-    return highlights.map(h => `• ${h}`).join('\n');
-  }
-
-  generateCollaborationInvite(analysis) {
-    if (analysis.technicalLevel === 'high') {
-      return "Always interested in collaborating with other makers who understand good design!";
-    } else {
-      return "Love connecting with fellow SKÅDIS enthusiasts!";
-    }
-  }
-
-  generateKeyBenefit(analysis) {
-    if (analysis.problemAreas.includes('stability')) {
-      return "Two-slot mounting eliminates hook wobble completely.";
-    } else {
-      return "Four hook variants with superior stability design.";
-    }
-  }
-
-  generateSimpleQuestion(prospect, analysis) {
-    if (analysis.problemAreas.length > 0) {
-      return "Think they might solve some issues you've had?";
-    } else {
-      return "Thoughts?";
-    }
-  }
+  // Removed: Now in MessagePersonalizer
 
   // 🛠️ UTILITY FUNCTIONS
-  extractProjectName(url) {
-    if (!url) return "your SKÅDIS project";
-    
-    const match = url.match(/models\/\d+-([^#?]+)/);
-    if (match) {
-      return match[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    }
-    return "your SKÅDIS project";
-  }
-
-  generateFallbackMessage(prospect) {
-    // Apply system prompt principles even to fallback messages
-    const message = `Hi ${prospect.username},
-
-Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusiast!
-
-I've been working on some enhanced SKÅDIS hooks that solve the stability issues of single-slot hooks through a two-slot mounting system. Since you're interested in SKÅDIS accessories, I thought you might find them interesting.
-
-The project includes 4 hook variants with complete documentation and assembly photos:
-https://makerworld.com/en/models/1503225-simple-skadis-hook#profileId-1572818
-
-Would love to hear your thoughts if you check them out!
-
-Best,
-Mihkel`;
-
-    // Log that this is using fallback with system prompt guidance
-    console.log('📝 Using system prompt-guided fallback message for:', prospect.username);
-    return message;
-  }
-
-  cleanupMessage(message) {
-    // Remove any unfilled placeholders
-    message = message.replace(/\{[^}]+\}/g, '');
-    
-    // Clean up extra whitespace and line breaks
-    message = message.replace(/\n\s*\n\s*\n/g, '\n\n');
-    message = message.replace(/^\s+|\s+$/g, '');
-    
-    return message;
-  }
+  // Removed: Now in MessagePersonalizer
 
   // 📊 ANALYTICS
   getMessageAnalytics(prospect, result) {

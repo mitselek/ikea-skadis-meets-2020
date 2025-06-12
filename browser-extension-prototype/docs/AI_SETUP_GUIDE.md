@@ -1,7 +1,5 @@
 # 🤖 Real AI Assistant Setup Guide
 
-## Overview
-
 The SKÅDIS Outreach Helper now includes a **Real AI Assistant** that can synthesize truly personalized messages by analyzing the original user's comments and creating natural, maker-to-maker conversations instead of template-based messages.
 
 ## 🚀 Quick Setup
@@ -55,7 +53,7 @@ Choose one of these providers:
 
 ## 📊 Message Quality Comparison
 
-### Template Message Example:
+### Template Message Example
 
 ```text
 Hi JohnMaker,
@@ -65,7 +63,7 @@ Saw your comment on this SKÅDIS project - great to meet another SKÅDIS enthusi
 I've been working on some enhanced SKÅDIS hooks that solve the stability issues...
 ```
 
-### Real AI Synthesized Example:
+### Real AI Synthesized Example
 
 ```text
 Hi JohnMaker,
@@ -142,8 +140,6 @@ I ended up designing a two-slot mounting system that completely eliminates that 
 
 ## 🎯 **SYSTEM PROMPT CONFIGURATION**
 
-### Overview
-
 The extension includes **System Prompts** - customizable guidelines that ensure consistent, high-quality messaging across all templates.
 
 ### What System Prompts Do
@@ -219,4 +215,4 @@ testSystemPrompts()
 
 ---
 
-**Happy AI-powered outreach! 🚀**
+## Happy AI-powered outreach! 🚀
