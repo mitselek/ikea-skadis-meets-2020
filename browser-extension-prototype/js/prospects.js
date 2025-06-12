@@ -113,21 +113,21 @@ class ProspectsManager {
         <div class="prospect-item ${statusClass} ${qualityClass}">
           <div class="prospect-info">
             <div class="prospect-username">@${prospect.username}</div>
-            <div class="prospect-text">"${prospect.text.substring(0, 80)}${prospect.text.length > 80 ? '...' : ''}"</div>
+            <div class="prospect-text">"${prospect.text.substring(0, 50)}${prospect.text.length > 50 ? '...' : ''}"</div>
             <div class="prospect-meta">
-              <span>Quality: ${prospect.quality}</span>
-              <span>Score: ${prospect.score}</span>
-              <span>${isContacted ? '🔴 CONTACTED' : '🟢 Available'}</span>
+              <span>${prospect.quality}</span>
+              <span>Score:${prospect.score}</span>
+              <span>${isContacted ? '🔴' : '🟢'}</span>
             </div>
           </div>
           <div class="prospect-actions">
             <button class="prospect-btn message" ${isContacted ? 'disabled' : ''} 
-                    onclick="window.prospectsManager.sendMessageToProspect('${prospect.username}')">
-              📧 Message
+                    onclick="sendMessageToProspect('${prospect.username}')">
+              📧
             </button>
             <button class="prospect-btn profile" 
-                    onclick="window.prospectsManager.openProspectProfile('${prospect.profileLink}')">
-              👤 Profile
+                    onclick="openProspectProfile('${prospect.profileLink}')">
+              👤
             </button>
           </div>
         </div>
@@ -139,9 +139,8 @@ class ProspectsManager {
     const container = document.getElementById('prospects-list');
     container.innerHTML = `
       <div class="empty-state">
-        <h4>No prospects found yet</h4>
-        <p>Start by extracting comments from SKÅDIS projects!<br>
-        Click "💬 Extract Comments" to find potential customers.</p>
+        <h4>No prospects found</h4>
+        <p>Extract comments from SKÅDIS projects to find prospects!</p>
       </div>
     `;
     

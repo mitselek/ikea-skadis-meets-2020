@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   document.getElementById('view-campaign').addEventListener('click', () => {
-    dashboardManager.showDashboardView();
+    dashboardManager.showDashboard();
   });
   
   document.getElementById('export-csv').addEventListener('click', () => {
