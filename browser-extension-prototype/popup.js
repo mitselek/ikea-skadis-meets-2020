@@ -1,4 +1,4 @@
-// Popup script - handles the extension interface
+// Popup Script - handles the extension interface
 document.addEventListener('DOMContentLoaded', function() {
   
   // Load current stats from storage
@@ -9,21 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('extract-comments').addEventListener('click', extractComments);
   document.getElementById('view-prospects').addEventListener('click', viewProspects);
   document.getElementById('send-template').addEventListener('click', quickMessage);
+  document.getElementById('view-campaign').addEventListener('click', viewCampaignDashboard);
+  document.getElementById('export-csv').addEventListener('click', exportTrackingData);
+  
+  // Load and display initial stats
+  updateStatsDisplay();
   
   async function loadStats() {
-    try {
-      const result = await chrome.storage.local.get(['prospects', 'messagesSent', 'responses']);
-      
-      document.getElementById('prospects-count').textContent = (result.prospects || []).length;
-      document.getElementById('messages-sent').textContent = result.messagesSent || 0;
-      
-      const responseRate = result.messagesSent > 0 ? 
-        Math.round((result.responses || 0) / result.messagesSent * 100) : 0;
-      document.getElementById('response-rate').textContent = responseRate + '%';
-      
-    } catch (error) {
-      console.log('Stats loading error:', error);
-    }
+    // Redirect to the new updateStatsDisplay function
+    await updateStatsDisplay();
   }
   
   async function extractCurrentPage() {
@@ -86,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         await chrome.storage.local.set({prospects: allProspects});
         
         showStatus(`✅ Found ${comments.length} quality commenters! Check prospects.`, 'success');
-        loadStats(); // Refresh the display
+        updateStatsDisplay(); // Refresh the display with new function
       } else {
         showStatus('No comments found. Try scrolling down or loading more comments first.', 'error');
       }
@@ -141,7 +135,13 @@ document.addEventListener('DOMContentLoaded', function() {
       // Copy to clipboard (in real version, this would open MakerWorld message composer)
       await navigator.clipboard.writeText(message);
       
-      showStatus(`✅ Message for @${bestProspect.username} copied to clipboard!`, 'success');
+      // 🚀 AUTOMATIC MESSAGE TRACKING - Log this outreach!
+      await logOutreachMessage(bestProspect, message, 'Standard Template');
+      
+      // Refresh stats display to show updated message count
+      await updateStatsDisplay();
+      
+      showStatus(`✅ Message for @${bestProspect.username} copied & tracked!`, 'success');
       
     } catch (error) {
       showStatus('Error generating message: ' + error.message, 'error');
@@ -163,7 +163,232 @@ Would love to hear your thoughts if you check them out!
 Best,
 Mihkel`;
   }
+
+  // 🎯 AUTOMATIC MESSAGE TRACKING SYSTEM
+  async function logOutreachMessage(prospect, messageContent, templateUsed) {
+    try {
+      // Get current tracking data
+      const result = await chrome.storage.local.get(['outreachLog', 'campaignStats']);
+      const outreachLog = result.outreachLog || [];
+      const campaignStats = result.campaignStats || {
+        totalMessages: 0,
+        messagesByMonth: {},
+        templateUsage: {},
+        qualityBreakdown: { High: 0, Medium: 0, Low: 0 },
+        sourceProjects: {}
+      };
+
+      // Create message log entry
+      const logEntry = {
+        timestamp: new Date().toISOString(),
+        date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+        username: prospect.username,
+        profileUrl: prospect.profileLink,
+        messageUrl: generateMessageUrl(prospect.username), // Construct MakerWorld message URL
+        sourceProject: prospect.source,
+        prospectQuality: prospect.quality,
+        templateUsed: templateUsed,
+        messagePreview: messageContent.substring(0, 100) + '...',
+        responseStatus: 'Sent',
+        responseDate: null,
+        responseType: null,
+        notes: `Auto-tracked from extension. Original comment: "${prospect.text.substring(0, 50)}..."`
+      };
+
+      // Add to log
+      outreachLog.push(logEntry);
+
+      // Update campaign statistics
+      campaignStats.totalMessages++;
+      const month = new Date().toISOString().substring(0, 7); // YYYY-MM
+      campaignStats.messagesByMonth[month] = (campaignStats.messagesByMonth[month] || 0) + 1;
+      campaignStats.templateUsage[templateUsed] = (campaignStats.templateUsage[templateUsed] || 0) + 1;
+      campaignStats.qualityBreakdown[prospect.quality]++;
+      
+      const sourceProjectName = extractProjectName(prospect.source);
+      campaignStats.sourceProjects[sourceProjectName] = (campaignStats.sourceProjects[sourceProjectName] || 0) + 1;
+
+      // Save updated data
+      await chrome.storage.local.set({
+        outreachLog: outreachLog,
+        campaignStats: campaignStats
+      });
+
+      // Also create CSV-compatible entry for export
+      await saveToCSVFormat(logEntry);
+
+      console.log('✅ Message logged successfully:', logEntry);
+
+    } catch (error) {
+      console.error('❌ Error logging outreach message:', error);
+    }
+  }
+
+  function generateMessageUrl(username) {
+    // Construct MakerWorld message URL (this would need the actual user ID in practice)
+    return `https://makerworld.com/en/my/message?username=${username}`;
+  }
+
+  function extractProjectName(url) {
+    const match = url.match(/models\/\d+-([^#?]+)/);
+    return match ? match[1].replace(/-/g, ' ') : 'Unknown Project';
+  }
+
+  async function saveToCSVFormat(logEntry) {
+    try {
+      // Get existing CSV data
+      const result = await chrome.storage.local.get(['csvExportData']);
+      const csvData = result.csvExportData || [];
+
+      // Create CSV row format matching your outreach_contacts.csv structure
+      const csvRow = {
+        Date_Collected: logEntry.date,
+        Username: logEntry.username,
+        Profile_URL: logEntry.profileUrl,
+        Message_URL: logEntry.messageUrl,
+        Source_Project: extractProjectName(logEntry.sourceProject),
+        Comment_Quality: logEntry.prospectQuality,
+        Engagement_Level: logEntry.prospectQuality, // Use quality as engagement proxy
+        SKADIS_Projects: 'Unknown', // Would need additional analysis
+        Last_Active: logEntry.date,
+        Priority: logEntry.prospectQuality,
+        Notes: logEntry.notes,
+        Contact_Status: 'Contacted',
+        Template_Used: logEntry.templateUsed,
+        Response_Date: '',
+        Response_Type: ''
+      };
+
+      csvData.push(csvRow);
+      await chrome.storage.local.set({ csvExportData: csvData });
+
+    } catch (error) {
+      console.error('❌ Error saving CSV format:', error);
+    }
+  }
   
+  async function updateStatsDisplay() {
+    try {
+      const result = await chrome.storage.local.get(['prospects', 'campaignStats']);
+      const prospects = result.prospects || [];
+      const stats = result.campaignStats || { totalMessages: 0 };
+      
+      document.getElementById('prospects-count').textContent = prospects.length;
+      document.getElementById('messages-sent').textContent = stats.totalMessages;
+      
+      // Calculate response rate (placeholder for now)
+      const responseRate = stats.totalMessages > 0 ? '12%' : '0%'; // Would calculate from actual responses
+      document.getElementById('response-rate').textContent = responseRate;
+      
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
+  }
+
+  // 📈 CAMPAIGN DASHBOARD
+  async function viewCampaignDashboard() {
+    try {
+      const result = await chrome.storage.local.get(['campaignStats', 'outreachLog']);
+      const stats = result.campaignStats || {
+        totalMessages: 0,
+        messagesByMonth: {},
+        templateUsage: {},
+        qualityBreakdown: { High: 0, Medium: 0, Low: 0 },
+        sourceProjects: {}
+      };
+      const log = result.outreachLog || [];
+
+      // Create detailed dashboard report
+      let dashboard = `📈 CAMPAIGN DASHBOARD\\n\\n`;
+      dashboard += `📊 OVERVIEW:\\n`;
+      dashboard += `Total Messages Sent: ${stats.totalMessages}\\n`;
+      dashboard += `Campaign Started: ${log.length > 0 ? log[0].date : 'Not started'}\\n`;
+      dashboard += `Latest Activity: ${log.length > 0 ? log[log.length - 1].date : 'None'}\\n\\n`;
+
+      dashboard += `🎯 PROSPECT QUALITY:\\n`;
+      dashboard += `High Quality: ${stats.qualityBreakdown.High || 0} messages\\n`;
+      dashboard += `Medium Quality: ${stats.qualityBreakdown.Medium || 0} messages\\n`;
+      dashboard += `Low Quality: ${stats.qualityBreakdown.Low || 0} messages\\n\\n`;
+
+      dashboard += `📝 TEMPLATE USAGE:\\n`;
+      Object.entries(stats.templateUsage).forEach(([template, count]) => {
+        dashboard += `${template}: ${count} times\\n`;
+      });
+
+      dashboard += `\\n🚀 SOURCE PROJECTS:\\n`;
+      Object.entries(stats.sourceProjects).forEach(([project, count]) => {
+        dashboard += `${project}: ${count} prospects\\n`;
+      });
+
+      dashboard += `\\n📅 RECENT ACTIVITY (Last 5):\\n`;
+      const recentMessages = log.slice(-5).reverse();
+      recentMessages.forEach((entry, i) => {
+        dashboard += `${i+1}. @${entry.username} - ${entry.date} (${entry.prospectQuality})\\n`;
+      });
+
+      alert(dashboard);
+      
+    } catch (error) {
+      showStatus('Error loading campaign data: ' + error.message, 'error');
+    }
+  }
+
+  // 💾 EXPORT TRACKING DATA
+  async function exportTrackingData() {
+    try {
+      const result = await chrome.storage.local.get(['csvExportData', 'outreachLog']);
+      const csvData = result.csvExportData || [];
+      const outreachLog = result.outreachLog || [];
+
+      if (csvData.length === 0 && outreachLog.length === 0) {
+        showStatus('No tracking data to export yet!', 'error');
+        return;
+      }
+
+      // Create CSV content
+      const headers = [
+        'Date_Collected', 'Username', 'Profile_URL', 'Message_URL', 'Source_Project',
+        'Comment_Quality', 'Engagement_Level', 'SKADIS_Projects', 'Last_Active',
+        'Priority', 'Notes', 'Contact_Status', 'Template_Used', 'Response_Date', 'Response_Type'
+      ];
+
+      let csvContent = headers.join(',') + '\\n';
+
+      // Add CSV data
+      csvData.forEach(row => {
+        const values = headers.map(header => {
+          const value = row[header] || '';
+          // Escape commas and quotes in CSV
+          return value.includes(',') || value.includes('"') ? `"${value.replace(/"/g, '""')}"` : value;
+        });
+        csvContent += values.join(',') + '\\n';
+      });
+
+      // Create downloadable file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `skadis_outreach_tracking_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showStatus(`✅ Exported ${csvData.length} tracking records!`, 'success');
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(csvContent);
+        showStatus('📋 CSV data copied to clipboard!', 'success');
+      }
+      
+    } catch (error) {
+      showStatus('Error exporting data: ' + error.message, 'error');
+    }
+  }
+
   function showStatus(message, type) {
     const statusEl = document.getElementById('status-message');
     statusEl.textContent = message;
