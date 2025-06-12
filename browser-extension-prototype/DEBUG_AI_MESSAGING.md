@@ -132,7 +132,7 @@ window.testAI = function() {
 
 ### **Working System Should Show:**
 
-```
+```text
 ✅ AIMessagingManager available: function
 ✅ AI instance: AIMessagingManager { messageTemplates: {...} }
 ✅ AI Test Result: { message: "Hi TestUser...", templateUsed: "AI: Technical Focus", confidence: 0.9 }
@@ -140,7 +140,7 @@ window.testAI = function() {
 
 ### **Broken System Will Show:**
 
-```
+```text
 ❌ AIMessagingManager available: undefined
 ❌ AI instance: null
 ❌ AI Test Result: undefined

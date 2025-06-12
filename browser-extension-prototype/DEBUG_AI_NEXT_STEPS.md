@@ -3,6 +3,7 @@
 ## ✅ **GOOD NEWS: AI System is Properly Loaded!**
 
 Your debug output confirms:
+
 - ✅ `AIMessagingManager` is available as a function
 - ✅ `messagingManager.aiMessaging` has a proper AI instance
 
@@ -47,7 +48,7 @@ chrome.storage.local.get(['prospects']).then(result => {
 
 The AI might be working but failing silently. Check the console output when you click "📧 Send Template Message" - you should see debug logs like:
 
-```
+```text
 🔍 generateQuickMessage called with prospect: [username]
 🔍 this.aiMessaging exists: true
 🔍 Attempting AI message generation...
@@ -57,14 +58,17 @@ The AI might be working but failing silently. Check the console output when you 
 ## 🤔 **POSSIBLE ISSUES**
 
 ### **Issue 1: Empty Prospects Array**
+
 If you haven't extracted prospects yet, the button won't have anyone to message.
 
 **Solution:** Extract comments first with "💬 Extract Comments"
 
 ### **Issue 2: All Prospects Already Contacted**
+
 The system skips prospects that have already been contacted.
 
 **Solution:** Check this with:
+
 ```javascript
 chrome.storage.local.get(['prospects', 'outreachLog']).then(result => {
   const prospects = result.prospects || [];
@@ -82,6 +86,7 @@ chrome.storage.local.get(['prospects', 'outreachLog']).then(result => {
 ```
 
 ### **Issue 3: AI Generation Success but Wrong Template Logged**
+
 The AI might be working but the tracking system might be logging the wrong template type.
 
 ## 🚀 **QUICK TESTS TO RUN**
@@ -111,6 +116,7 @@ chrome.storage.local.get(['aiAnalytics']).then(r => console.log('AI Analytics:',
 ## 📊 **EXPECTED RESULTS**
 
 If AI is working correctly, you should see:
+
 - ✅ Prospects available (> 0)
 - ✅ Uncontacted prospects available (> 0)  
 - ✅ AI test generates a message successfully
