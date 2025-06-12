@@ -185,7 +185,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // Refresh stats display to show updated message count
       await updateStatsDisplay();
       
-      showStatus(`✅ Message for @${bestProspect.username} copied & tracked! (${uncontactedProspects.length - 1} uncontacted left)`, 'success');
+      // 🌐 AUTO-OPEN USER PROFILE - Open user's profile in new tab for easy messaging
+      try {
+        const profileUrl = bestProspect.profileLink;
+        await chrome.tabs.create({ url: profileUrl, active: true }); // Opens in foreground for immediate use
+        showStatus(`✅ Message copied & profile opened! @${bestProspect.username} (${uncontactedProspects.length - 1} uncontacted left)`, 'success');
+      } catch (tabError) {
+        console.error('Error opening profile tab:', tabError);
+        showStatus(`✅ Message copied & tracked! @${bestProspect.username} (Profile link: ${bestProspect.profileLink})`, 'success');
+      }
       
     } catch (error) {
       showStatus('Error generating message: ' + error.message, 'error');
