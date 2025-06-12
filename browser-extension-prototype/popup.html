@@ -89,6 +89,117 @@
       opacity: 0.8;
     }
 
+    /* AI Configuration Section Styles */
+    .ai-config-section {
+      display: none;
+      width: 300px;
+      padding: 15px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 400px;
+      box-sizing: border-box;
+    }
+
+    .ai-config-section.active {
+      display: block;
+    }
+
+    .ai-config-section .dashboard-section {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .ai-config-section h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #ffd700;
+      text-align: center;
+    }
+
+    .ai-config-section label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .ai-config-section select,
+    .ai-config-section input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+
+    .ai-config-section select:focus,
+    .ai-config-section input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 2px #4CAF50;
+    }
+
+    .ai-config-section button {
+      flex: 1;
+      padding: 10px 15px;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(76, 175, 80, 0.8);
+      color: white;
+    }
+
+    .ai-config-section button:hover {
+      background: rgba(76, 175, 80, 1);
+      transform: translateY(-1px);
+    }
+
+    .ai-config-section button#disable-real-ai {
+      background: rgba(244, 67, 54, 0.8);
+    }
+
+    .ai-config-section button#disable-real-ai:hover {
+      background: rgba(244, 67, 54, 1);
+    }
+
+    .ai-config-section button#close-ai-config {
+      background: rgba(128, 128, 128, 0.8);
+    }
+
+    .ai-config-section button#close-ai-config:hover {
+      background: rgba(128, 128, 128, 1);
+    }
+
+    #ai-config-status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #ai-config-status.success {
+      background: rgba(76, 175, 80, 0.3);
+      border: 1px solid #4CAF50;
+    }
+
+    #ai-config-status.error {
+      background: rgba(244, 67, 54, 0.3);
+      border: 1px solid #f44336;
+    }
+
     /* Dashboard Styles - Compact 300px Design */
     .dashboard {
       display: none;
@@ -526,6 +637,7 @@
     <button id="view-prospects" title="View and manage all extracted prospects">👥 View Prospects</button>
     <button id="send-template" title="Send message to next best uncontacted prospect">📧 Send Template Message</button>
     <button id="view-campaign" title="View AI-powered campaign analytics and insights">📈 Campaign Dashboard</button>
+    <button id="configure-ai" title="Configure Real AI Assistant for natural message synthesis">🤖 Configure AI Assistant</button>
     <button id="export-csv" title="Export all tracking data to CSV file">💾 Export Tracking Data</button>
   </div>
 
@@ -535,6 +647,34 @@
     <div>SKÅDIS Hook Variants by Mihkel</div>
     <div>🔗 <a href="https://makerworld.com/en/models/1503225-simple-skadis-hook" style="color: #ffd700;">Your Project</a></div>
   </div>
+  </div>
+
+  <!-- AI Configuration Section (Outside main-view) -->
+  <div class="ai-config-section" id="ai-config-section" style="display: none;">
+    <div class="dashboard-section">
+      <h3>🤖 Real AI Assistant Configuration</h3>
+      <div style="margin-bottom: 10px;">
+        <label style="display: block; margin-bottom: 5px; font-size: 12px;">AI Provider:</label>
+        <select id="ai-provider" style="width: 100%; padding: 8px; border: none; border-radius: 4px; background: rgba(255,255,255,0.9); color: #333;">
+          <option value="">Select Provider</option>
+          <option value="openai">OpenAI (GPT-4)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label style="display: block; margin-bottom: 5px; font-size: 12px;">API Key:</label>
+        <input type="password" id="ai-api-key" placeholder="Enter your API key" style="width: 100%; padding: 8px; border: none; border-radius: 4px; background: rgba(255,255,255,0.9); color: #333; box-sizing: border-box;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <button id="test-ai-connection" style="flex: 1; padding: 8px; font-size: 12px;">🔍 Test Connection</button>
+        <button id="save-ai-config" style="flex: 1; padding: 8px; font-size: 12px;">💾 Save Config</button>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="disable-real-ai" style="flex: 1; padding: 8px; font-size: 12px; background: rgba(255,0,0,0.3);">❌ Disable Real AI</button>
+        <button id="close-ai-config" style="flex: 1; padding: 8px; font-size: 12px;">✖️ Close</button>
+      </div>
+      <div id="ai-config-status" style="margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 12px; display: none;"></div>
+    </div>
   </div>
 
   <!-- Dashboard View -->
@@ -689,6 +829,7 @@
   </div>
 
   <!-- Load modular JavaScript files -->
+  <script src="js/real-ai-assistant.js"></script>
   <script src="js/ai-messaging.js"></script>
   <script src="js/prospects.js"></script>
   <script src="js/dashboard.js"></script>

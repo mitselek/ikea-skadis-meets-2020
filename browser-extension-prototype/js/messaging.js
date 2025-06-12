@@ -49,7 +49,7 @@ class MessagingManager {
       const bestProspect = uncontactedProspects.find(p => p.quality === 'High') || uncontactedProspects[0];
       
       // Generate a quick message and get template info
-      const messageResult = this.generateQuickMessageWithTemplate(bestProspect);
+      const messageResult = await this.generateQuickMessageWithTemplate(bestProspect);
       
       // Copy to clipboard
       await navigator.clipboard.writeText(messageResult.message);
@@ -77,11 +77,11 @@ class MessagingManager {
     }
   }
   
-  generateQuickMessageWithTemplate(prospect) {
+  async generateQuickMessageWithTemplate(prospect) {
     // 🤖 Try AI-generated message first
     if (this.aiMessaging) {
       try {
-        const aiResult = this.aiMessaging.generatePersonalizedMessage(prospect);
+        const aiResult = await this.aiMessaging.generatePersonalizedMessage(prospect);
         console.log(`✨ AI Generated ${aiResult.templateUsed} for @${prospect.username}`);
         
         // Store AI analytics for dashboard

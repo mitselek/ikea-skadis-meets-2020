@@ -3,6 +3,19 @@
 
 class AIMessagingManager {
   constructor() {
+    // Initialize Real AI Assistant with error handling
+    try {
+      this.realAI = window.RealAIAssistant ? new window.RealAIAssistant() : null;
+      if (this.realAI) {
+        console.log('✅ Real AI Assistant initialized in AIMessagingManager');
+      } else {
+        console.log('⚠️ RealAIAssistant not available - using template system only');
+      }
+    } catch (error) {
+      console.error('❌ Error initializing Real AI Assistant:', error);
+      this.realAI = null;
+    }
+    
     this.messageTemplates = {
       technical: {
         name: 'Technical Focus',
@@ -107,45 +120,59 @@ Mihkel`
     };
   }
 
-  // 🧠 AI-POWERED MESSAGE GENERATION
-  generatePersonalizedMessage(prospect) {
+  // 🧠 AI-POWERED MESSAGE GENERATION (Enhanced with Real AI)
+  async generatePersonalizedMessage(prospect) {
     try {
-      // Analyze prospect data to determine best template and personalization
+      // First, generate template-based message as fallback
       const analysis = this.analyzeProspect(prospect);
       const template = this.selectOptimalTemplate(analysis);
       const personalizations = this.generatePersonalizations(prospect, analysis);
       
-      // Generate the personalized message
-      let message = template.template;
-      
-      // Apply all personalizations
+      // Generate template message
+      let templateMessage = template.template;
       Object.entries(personalizations).forEach(([key, value]) => {
         const placeholder = `{${key}}`;
-        message = message.replace(new RegExp(placeholder, 'g'), value);
+        templateMessage = templateMessage.replace(new RegExp(placeholder, 'g'), value);
       });
-      
-      // Final cleanup
-      message = this.cleanupMessage(message);
-      
-      console.log('🤖 AI Generated message for:', prospect.username);
+      templateMessage = this.cleanupMessage(templateMessage);
+
+      // 🚀 TRY REAL AI SYNTHESIS
+      if (this.realAI) {
+        const realAIResult = await this.realAI.synthesizePersonalizedMessage(
+          prospect.text,
+          templateMessage,
+          prospect
+        );
+
+        if (realAIResult) {
+          console.log('✨ Real AI synthesized message for:', prospect.username);
+          return realAIResult;
+        }
+      } else {
+        console.log('🔄 Real AI not available - using template system');
+      }
+
+      // 🔄 FALLBACK TO TEMPLATE SYSTEM
+      console.log('🤖 Using template-based AI for:', prospect.username);
       console.log('📊 Analysis:', analysis);
       console.log('📝 Template used:', template.name);
       
       return {
-        message: message,
+        message: templateMessage,
         templateUsed: `AI: ${template.name}`,
         confidence: analysis.confidence,
-        personalizations: personalizations
+        personalizations: personalizations,
+        synthesized: false
       };
       
     } catch (error) {
       console.error('Error generating AI message:', error);
-      // Fallback to basic template
       return {
         message: this.generateFallbackMessage(prospect),
         templateUsed: 'AI: Fallback Template',
         confidence: 0.5,
-        personalizations: {}
+        personalizations: {},
+        synthesized: false
       };
     }
   }
