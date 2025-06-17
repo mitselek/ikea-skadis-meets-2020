@@ -1,3 +1,0 @@
-Date_Collected,Username,Profile_URL,Message_URL,Source_Project,Comment_Quality,Engagement_Level,SKADIS_Projects,Last_Active,Priority,Notes,Contact_Status,Template_Used,Response_Date,Response_Type
-2025-06-12,example_user,https://makerworld.com/en/@example_user/upload,https://makerworld.com/en/my/message?recvID=1234567,Related Hook Project,High,High,3,2025-06-10,High,"Asked about hook stability in comments",Not_Contacted,,,,
-2025-06-12,test_user,https://makerworld.com/en/@test_user/upload,https://makerworld.com/en/my/message?recvID=999999,Test Project,Medium,Medium,Unknown,Unknown,Medium,"Testing the system",Not_Contacted,,,
