@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .stats {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #ffd700;
+    }
+    
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    /* Fix for button click issues */
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.15s;
+      position: relative;
+      z-index: 2;  /* Ensure buttons are above other elements */
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3); /* Mobile tap highlight */
+      touch-action: manipulation; /* Improve touch behavior */
+    }
+    
+    button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    button:active {
+      transform: scale(0.95);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .success {
+      background: rgba(76, 175, 80, 0.3);
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    
+    .error {
+      background: rgba(244, 67, 54, 0.3);
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* AI Configuration Section Styles */
+    .ai-config-section {
+      display: none;
+      width: 300px;
+      padding: 15px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 400px;
+      box-sizing: border-box;
+    }
+
+    .ai-config-section.active {
+      display: block;
+    }
+
+    .ai-config-section .dashboard-section {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .ai-config-section h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #ffd700;
+      text-align: center;
+    }
+
+    .ai-config-section label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .ai-config-section select,
+    .ai-config-section input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+
+    .ai-config-section select:focus,
+    .ai-config-section input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 2px #4CAF50;
+    }
+
+    .ai-config-section button {
+      flex: 1;
+      padding: 10px 15px;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(76, 175, 80, 0.8);
+      color: white;
+    }
+
+    .ai-config-section button:hover {
+      background: rgba(76, 175, 80, 1);
+      transform: translateY(-1px);
+    }
+
+    .ai-config-section button#disable-real-ai {
+      background: rgba(244, 67, 54, 0.8);
+    }
+
+    .ai-config-section button#disable-real-ai:hover {
+      background: rgba(244, 67, 54, 1);
+    }
+
+    .ai-config-section button#close-ai-config {
+      background: rgba(128, 128, 128, 0.8);
+    }
+
+    .ai-config-section button#close-ai-config:hover {
+      background: rgba(128, 128, 128, 1);
+    }
+
+    #ai-config-status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #ai-config-status.success {
+      background: rgba(76, 175, 80, 0.3);
+      border: 1px solid #4CAF50;
+    }
+
+    #ai-config-status.error {
+      background: rgba(244, 67, 54, 0.3);
+      border: 1px solid #f44336;
+    }
+
+    /* Dashboard Styles - Compact 300px Design */
+    .dashboard {
+      display: none;
+      max-height: 600px;
+      overflow-y: auto;
+      padding: 10px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    .main-view {
+      display: block;
+    }
+
+    .main-view.hidden {
+      display: none;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .dashboard-section {
+      background: rgba(255,255,255,0.1);
+      margin-bottom: 10px;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .dashboard-section h3 {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+      color: #ffd700;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,0.05);
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .metric-label {
+      font-size: 9px;
+      opacity: 0.8;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    .progress-bar {
+      background: rgba(255,255,255,0.1);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .ai-insight {
+      background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+      padding: 8px;
+      border-radius: 6px;
+      margin: 8px 0;
+      border-left: 3px solid #ffd700;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .ai-insight .icon {
+      font-size: 12px;
+      margin-right: 6px;
+    }
+
+    .recent-activity {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+    }
+
+    .quality-high { color: #4CAF50; }
+    .quality-medium { color: #FF9800; }
+    .quality-low { color: #F44336; }
+
+    /* Prospects View Styles - Compact 300px Design */
+    .prospects-view {
+      display: none;
+      padding: 10px;
+      min-height: 400px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+      color: white;
+      font-family: Arial, sans-serif;
+      width: 300px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .prospects-view.active {
+      display: block;
+    }
+
+    .prospects-summary {
+      margin-bottom: 15px;
+    }
+
+    /* Compact metric grid for 300px width */
+    .prospects-summary .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .prospects-summary .metric-card {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 4px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .prospects-summary .metric-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .prospects-summary .metric-label {
+      font-size: 9px;
+      opacity: 0.8;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    .prospects-filters {
+      margin-bottom: 15px;
+    }
+
+    .prospects-filters h3 {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .filter-btn {
+      padding: 4px 6px;
+      font-size: 9px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: rgba(76, 175, 80, 0.8);
+      border-color: #4CAF50;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .prospects-section {
+      margin-bottom: 20px;
+    }
+
+    .prospects-section h3 {
+      margin: 0 0 15px 0;
+      font-size: 14px;
+    }
+
+    .prospects-list {
+      max-height: 280px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 5px;
+    }
+
+    .prospect-item {
+      display: block;
+      padding: 8px;
+      margin-bottom: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .prospect-item:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .prospect-item.contacted {
+      opacity: 0.7;
+      border-left-color: #F44336;
+    }
+
+    .prospect-item.uncontacted {
+      border-left-color: #4CAF50;
+    }
+
+    .prospect-item.quality-high {
+      border-left-color: #4CAF50;
+    }
+
+    .prospect-item.quality-medium {
+      border-left-color: #FF9800;
+    }
+
+    .prospect-item.quality-low {
+      border-left-color: #F44336;
+    }
+
+    .prospect-info {
+      margin-bottom: 6px;
+    }
+
+    .prospect-username {
+      font-weight: bold;
+      font-size: 11px;
+      margin-bottom: 2px;
+      color: #ffd700;
+    }
+
+    .prospect-text {
+      font-size: 9px;
+      opacity: 0.8;
+      line-height: 1.2;
+      margin-bottom: 3px;
+      max-height: 24px;
+      overflow: hidden;
+    }
+
+    .prospect-meta {
+      font-size: 8px;
+      opacity: 0.6;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .prospect-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .prospect-btn {
+      padding: 3px 6px;
+      font-size: 8px;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex: 1;
+      text-align: center;
+    }
+
+    .prospect-btn.message {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .prospect-btn.profile {
+      background: #2196F3;
+      color: white;
+    }
+
+    .prospect-btn:hover {
+      opacity: 0.8;
+    }
+
+    .prospect-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .prospects-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      padding: 6px 8px;
+      font-size: 9px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      width: 100%;
+    }
+
+    .action-btn.primary {
+      background: #4CAF50;
+      border-color: #4CAF50;
+    }
+
+    .action-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .action-btn.primary:hover {
+      background: #45a049;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px 10px;
+      opacity: 0.7;
+    }
+
+    .empty-state h4 {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .empty-state h4 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .nav-btn {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      border: none;
+      color: white;
+    }
+
+    .dashboard-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Message Preview Section Styles */
+    .message-preview {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .preview-header h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #ffd700;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .prospect-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 12px;
+    }
+
+    .message-content label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .message-content textarea {
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      box-sizing: border-box;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .message-actions button {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px;
+      font-size: 11px;
+    }
+
+    .edit-btn {
+      background: #4CAF50;
+    }
+
+    .regen-btn {
+      background: #FF9800;
+    }
+
+    .send-btn {
+      background: #2196F3;
+    }
+
+    .ai-chat label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .ai-chat textarea {
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    .chat-btn {
+      background: #9C27B0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main View -->
+  <div class="main-view" id="main-view">
+    <div class="header">
+      <h2>🛠️ SKÅDIS Outreach</h2>
+      <p style="margin: 5px 0; font-size: 12px;">Community engagement made simple</p>
+    </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <span>Uncontacted/Total:</span>
+      <span class="stat-value" id="prospects-count">0/0</span>
+    </div>
+    <div class="stat-item">
+      <span>Messages Sent:</span>
+      <span class="stat-value" id="messages-sent">0</span>
+    </div>
+    <div class="stat-item">
+      <span>Response Rate:</span>
+      <span class="stat-value" id="response-rate">0%</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="extract-page" title="Analyze current MakerWorld page for SKÅDIS relevance and engagement">📊 Analyze This Page</button>
+    <button id="auto-load-comments" title="Automatically load all comments on the page without manual scrolling">🔄 Auto-Load All Comments</button>
+    <button id="extract-comments" title="Extract quality prospects from comments on this page">💬 Extract Comments</button>
+    <button id="view-prospects" title="View and manage all extracted prospects">👥 View Prospects</button>
+    <button id="send-template" title="Send message to next best uncontacted prospect">📧 Send Template Message</button>
+    <button id="view-campaign" title="View AI-powered campaign analytics and insights">📈 Campaign Dashboard</button>
+    <button id="configure-ai" title="Configure Real AI Assistant for natural message synthesis">🤖 Configure AI Assistant</button>
+    <button id="export-csv" title="Export all tracking data to CSV file">💾 Export Tracking Data</button>
+  </div>
+
+  <div id="status-message"></div>
+
+  <div class="footer">
+    <div>SKÅDIS Hook Variants by Mihkel</div>
+    <div>🔗 <a href="https://makerworld.com/en/models/1503225-simple-skadis-hook" style="color: #ffd700;">Your Project</a></div>
+  </div>
+  </div>
+
+  <!-- Message Preview Section (Outside main-view) -->
+  <div id="message-preview-section" class="message-preview" style="display: none;">
+    <div class="preview-header">
+      <h3>📧 Message Preview</h3>
+      <button id="close-preview" class="close-btn">✕</button>
+    </div>
+    
+    <div class="prospect-info">
+      <div id="preview-prospect-name"></div>
+      <div id="preview-prospect-platform"></div>
+    </div>
+    
+    <div class="message-content">
+      <label>Generated Message:</label>
+      <textarea id="preview-message" rows="8" readonly></textarea>
+    </div>
+    
+    <div class="message-actions">
+      <button id="edit-message" class="edit-btn">✏️ Edit Message</button>
+      <button id="regenerate-message" class="regen-btn">🔄 Regenerate</button>
+      <button id="send-final-message" class="send-btn">📧 Send This Message</button>
+    </div>
+    
+    <div class="ai-chat" id="ai-chat-section" style="display: none;">
+      <label>Chat with AI to adjust message:</label>
+      <textarea id="chat-input" rows="2" placeholder="E.g., 'Make it more casual' or 'Add mention of their project'"></textarea>
+      <button id="apply-chat-changes" class="chat-btn">💬 Apply Changes</button>
+    </div>
+  </div>
+
+  <!-- AI Configuration Section (Outside main-view) -->
+  <div class="ai-config-section" id="ai-config-section" style="display: none;">
+    <div class="dashboard-section">
+      <h3>🤖 Real AI Assistant Configuration</h3>
+      <div style="margin-bottom: 10px;">
+        <label style="display: block; margin-bottom: 5px; font-size: 12px;">AI Provider:</label>
+        <select id="ai-provider" style="width: 100%; padding: 8px; border: none; border-radius: 4px; background: rgba(255,255,255,0.9); color: #333;">
+          <option value="">Select Provider</option>
+          <option value="openai">OpenAI (GPT-4)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label style="display: block; margin-bottom: 5px; font-size: 12px;">API Key:</label>
+        <input type="password" id="ai-api-key" placeholder="Enter your API key" style="width: 100%; padding: 8px; border: none; border-radius: 4px; background: rgba(255,255,255,0.9); color: #333; box-sizing: border-box;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <button id="test-ai-connection" style="flex: 1; padding: 8px; font-size: 12px;">🔍 Test Connection</button>
+        <button id="save-ai-config" style="flex: 1; padding: 8px; font-size: 12px;">💾 Save Config</button>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="disable-real-ai" style="flex: 1; padding: 8px; font-size: 12px; background: rgba(255,0,0,0.3);">❌ Disable Real AI</button>
+        <button id="close-ai-config" style="flex: 1; padding: 8px; font-size: 12px;">✖️ Close</button>
+      </div>
+      <div id="ai-config-status" style="margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 12px; display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard View -->
+  <div class="dashboard" id="dashboard-view">
+    <div class="dashboard-header">
+      <h2>📈 Campaign Dashboard</h2>
+      <div class="back-btn" id="back-to-main" title="Return to main extension view">← Back</div>
+    </div>
+
+    <!-- AI Insights Section -->
+    <div class="dashboard-section">
+      <h3>🤖 AI Campaign Insights</h3>
+      <div id="ai-insights-container">
+        <!-- AI insights will be populated here -->
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="dashboard-section">
+      <h3>📊 Performance Overview</h3>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-value" id="total-messages">0</div>
+          <div class="metric-label">Messages Sent</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="response-rate-dash">0%</div>
+          <div class="metric-label">Response Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="uncontacted-count">0</div>
+          <div class="metric-label">Uncontacted</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="campaign-days">0</div>
+          <div class="metric-label">Days Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality Breakdown -->
+    <div class="dashboard-section">
+      <h3>🎯 Prospect Quality Distribution</h3>
+      <div id="quality-breakdown">
+        <!-- Quality charts will be populated here -->
+      </div>
+    </div>
+
+    <!-- Duplicate Prevention -->
+    <div class="dashboard-section">
+      <h3>🚫 Duplicate Prevention</h3>
+      <div id="duplicate-stats">
+        <!-- Duplicate prevention stats -->
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dashboard-section">
+      <h3>📅 Recent Activity</h3>
+      <div class="recent-activity" id="recent-activity">
+        <!-- Recent messages will be listed here -->
+      </div>
+      <div style="margin-top: 10px;">
+        <button id="simulate-response" style="padding: 6px 12px; font-size: 11px; background: rgba(76, 175, 80, 0.3);" 
+                title="Generate test response data to see AI insights and analytics in action">
+          📈 Simulate Response (Testing)
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Messaging Analytics -->
+    <div class="dashboard-section">
+      <h3>🤖 AI Messaging Analytics</h3>
+      <div id="ai-messaging-analytics">
+        <!-- AI messaging analytics will be populated here -->
+      </div>
+    </div>
+
+    <!-- Source Projects -->
+    <div class="dashboard-section">
+      <h3>🚀 Source Projects</h3>
+      <div id="source-projects">
+        <!-- Source project stats -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Prospects View -->
+  <div class="prospects-view" id="prospects-view">
+    <div class="dashboard-header">
+      <h2>👥 Prospects Overview</h2>
+      <div class="dashboard-nav">
+        <button id="back-to-main-from-prospects" class="nav-btn" 
+                title="Return to main extension view">← Back to Main</button>
+      </div>
+    </div>
+
+    <!-- Prospect Summary Cards -->
+    <div class="prospects-summary">
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-value" id="prospects-total">0</div>
+          <div class="metric-label">Total Found</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="prospects-uncontacted" style="color: #4CAF50;">0</div>
+          <div class="metric-label">🟢 Uncontacted</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="prospects-contacted" style="color: #F44336;">0</div>
+          <div class="metric-label">🔴 Contacted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality Filter -->
+    <div class="prospects-filters">
+      <h3>🎯 Filter by Quality</h3>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all" title="Show all prospects">All</button>
+        <button class="filter-btn" data-filter="High" title="Show only high-quality prospects">High</button>
+        <button class="filter-btn" data-filter="Medium" title="Show only medium-quality prospects">Medium</button>
+        <button class="filter-btn" data-filter="Low" title="Show only low-quality prospects">Low</button>
+        <button class="filter-btn" data-filter="uncontacted" title="Show only prospects not yet contacted">Uncontacted</button>
+        <button class="filter-btn" data-filter="contacted" title="Show only prospects already contacted">Contacted</button>
+      </div>
+    </div>
+
+    <!-- Prospects List -->
+    <div class="prospects-section">
+      <h3 id="prospects-section-title">📋 All Prospects</h3>
+      <div id="prospects-list" class="prospects-list">
+        <!-- Prospects will be populated here -->
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="prospects-actions">
+      <button id="message-next-prospect" class="action-btn primary" 
+              title="Automatically message the highest quality uncontacted prospect">
+        📧 Message Next Best Prospect
+      </button>
+      <button id="refresh-prospects" class="action-btn"
+              title="Reload and refresh the prospects list">
+        🔄 Refresh List
+      </button>
+      <button id="extract-more-prospects" class="action-btn"
+              title="Return to main view to extract more comments from other pages">
+        ➕ Extract More Comments
+      </button>
+    </div>
+  </div>
+
+  <!-- Load modular JavaScript files in dependency order -->
+  <!-- Core dependencies first -->
+  <script src="js/navigation.js"></script>
+  <script src="js/real-ai-assistant.js"></script>
+  <script src="js/ai-configuration.js"></script>
+  <script src="js/ai-messaging.js"></script>
+  
+  <!-- Feature modules -->
+  <script src="js/prospects.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/messaging.js"></script>
+  <script src="js/extraction.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/message-preview.js"></script>
+  
+  <!-- Initialize main app last -->
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKÅDIS Extension Test Runner</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #0066cc;
+            margin-top: 0;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 SKÅDIS Extension Test Runner</h1>
+        <p>CSP-compliant testing suite for the SKÅDIS Outreach Helper extension.</p>
+        
+        <div class="test-section">
+            <h2>🤖 AI Integration Tests</h2>
+            <p>Test the Real AI Assistant integration with OpenAI/Anthropic APIs.</p>
+            <button onclick="runAITests()" id="aiTestBtn">Run AI Integration Tests</button>
+            <div id="aiResults" class="results info">Click "Run AI Integration Tests" to start...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 Template System Tests</h2>
+            <p>Test the template-based messaging fallback system.</p>
+            <button onclick="runTemplateTests()" id="templateTestBtn">Run Template Tests</button>
+            <div id="templateResults" class="results info">Click "Run Template Tests" to start...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 System Integration Tests</h2>
+            <p>Test the complete message generation pipeline.</p>
+            <button onclick="runSystemTests()" id="systemTestBtn">Run System Tests</button>
+            <div id="systemResults" class="results info">Click "Run System Tests" to start...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>⚙️ Configuration Tests</h2>
+            <p>Test AI configuration and storage functionality.</p>
+            <button onclick="runConfigTests()" id="configTestBtn">Run Configuration Tests</button>
+            <div id="configResults" class="results info">Click "Run Configuration Tests" to start...</div>
+        </div>
+    </div>
+
+    <!-- Load extension modules -->
+    <script src="../js/real-ai-assistant.js"></script>
+    <script src="../js/ai-messaging.js"></script>
+    <script src="../js/messaging.js"></script>
+    <script src="../js/extraction.js"></script>
+    <script src="../js/prospects.js"></script>
+    
+    <!-- Load test modules -->
+    <script src="test-ai-integration.js"></script>
+    <script src="test-template-system.js"></script>
+    <script src="test-system-integration.js"></script>
+    <script src="test-configuration.js"></script>
+    
+    <script>
+        // Initialize test runner
+        console.log('🧪 SKÅDIS Extension Test Runner initialized');
+        
+        // Mock chrome API for testing
+        if (typeof chrome === 'undefined') {
+            window.chrome = {
+                storage: {
+                    local: {
+                        get: (keys, callback) => {
+                            console.log('Mock chrome.storage.local.get:', keys);
+                            const mockData = {
+                                aiProvider: 'openai',
+                                openaiApiKey: 'test-key-placeholder',
+                                anthropicApiKey: '',
+                                messageHistory: []
+                            };
+                            callback(mockData);
+                        },
+                        set: (data, callback) => {
+                            console.log('Mock chrome.storage.local.set:', data);
+                            if (callback) callback();
+                        }
+                    }
+                }
+            };
+        }
+        
+        // Global test utilities
+        function updateResults(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = content;
+            element.className = `results ${type}`;
+        }
+        
+        function disableButton(buttonId) {
+            document.getElementById(buttonId).disabled = true;
+        }
+        
+        function enableButton(buttonId) {
+            document.getElementById(buttonId).disabled = false;
+        }
+        
+        async function runAITests() {
+            disableButton('aiTestBtn');
+            updateResults('aiResults', 'Running AI Integration Tests...', 'info');
+            
+            try {
+                const results = await runAIIntegrationTests();
+                updateResults('aiResults', results, 'success');
+            } catch (error) {
+                updateResults('aiResults', `AI Tests Failed:\n${error.message}`, 'error');
+            } finally {
+                enableButton('aiTestBtn');
+            }
+        }
+        
+        async function runTemplateTests() {
+            disableButton('templateTestBtn');
+            updateResults('templateResults', 'Running Template System Tests...', 'info');
+            
+            try {
+                const results = await runTemplateSystemTests();
+                updateResults('templateResults', results, 'success');
+            } catch (error) {
+                updateResults('templateResults', `Template Tests Failed:\n${error.message}`, 'error');
+            } finally {
+                enableButton('templateTestBtn');
+            }
+        }
+        
+        async function runSystemTests() {
+            disableButton('systemTestBtn');
+            updateResults('systemResults', 'Running System Integration Tests...', 'info');
+            
+            try {
+                const results = await runSystemIntegrationTests();
+                updateResults('systemResults', results, 'success');
+            } catch (error) {
+                updateResults('systemResults', `System Tests Failed:\n${error.message}`, 'error');
+            } finally {
+                enableButton('systemTestBtn');
+            }
+        }
+        
+        async function runConfigTests() {
+            disableButton('configTestBtn');
+            updateResults('configResults', 'Running Configuration Tests...', 'info');
+            
+            try {
+                const results = await runConfigurationTests();
+                updateResults('configResults', results, 'success');
+            } catch (error) {
+                updateResults('configResults', `Configuration Tests Failed:\n${error.message}`, 'error');
+            } finally {
+                enableButton('configTestBtn');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+# 🔒 Security - Never commit sensitive files
+.env
+*.key
+**/secrets/
+**/*secret*
+**/*api*key*
+
+# Node modules and build artifacts
+node_modules/
+dist/
+build/
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# API Keys and Secrets (explicit patterns)
+**/OPENAI_API_KEY*
+**/ANTHROPIC_API_KEY*
+**/*sk-proj-*
+**/*sk-ant-*
