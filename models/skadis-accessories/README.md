@@ -10,6 +10,8 @@ This directory contains information about the accessories specifically designed 
 - **Shelves**: Small shelves that can be mounted on the pegboard for additional storage.
 - **Baskets**: Baskets designed to hold smaller items securely.
 - **Connectors**: Accessories that allow for the connection of multiple pegboards or integration with other systems.
+- **Join Plates**: Plates to join multiple Skadis boards together.
+- **Build Plate Holder**: Clips to hold a 3D printer build plate.
 
 ## Usage
 
